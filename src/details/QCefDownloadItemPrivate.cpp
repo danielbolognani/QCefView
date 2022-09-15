@@ -22,15 +22,13 @@ QCefDownloadItemPrivate::createQCefDownloadItem(CCefClientDelegate::RefPtr handl
   p->d_ptr->receivedBytes = cefItem.GetReceivedBytes();
 
   double t = 0;
-  cef_time_t ct;
+  cef_basetime_t ct;
 
   ct = cefItem.GetStartTime();
-  if (cef_time_to_doublet(&ct, &t))
-    p->d_ptr->startTime = QDateTime::fromSecsSinceEpoch(t);
+  p->d_ptr->startTime = QDateTime::fromSecsSinceEpoch(ct.val);
 
   ct = cefItem.GetEndTime();
-  if (cef_time_to_doublet(&ct, &t))
-    p->d_ptr->endTime = QDateTime::fromSecsSinceEpoch(t);
+  p->d_ptr->endTime = QDateTime::fromSecsSinceEpoch(ct.val);
 
   p->d_ptr->fullPath = QString::fromStdString(cefItem.GetFullPath().ToString());
   p->d_ptr->url = QString::fromStdString(cefItem.GetURL().ToString());
@@ -60,15 +58,13 @@ QCefDownloadItemPrivate::updateDownloadItem(QCefDownloadItem* p,
   p->d_ptr->receivedBytes = cefItem.GetReceivedBytes();
 
   double t = 0;
-  cef_time_t ct;
+  cef_basetime_t ct;
 
   ct = cefItem.GetStartTime();
-  if (cef_time_to_doublet(&ct, &t))
-    p->d_ptr->startTime = QDateTime::fromSecsSinceEpoch(t);
+  p->d_ptr->startTime = QDateTime::fromSecsSinceEpoch(ct.val);
 
   ct = cefItem.GetEndTime();
-  if (cef_time_to_doublet(&ct, &t))
-    p->d_ptr->endTime = QDateTime::fromSecsSinceEpoch(t);
+  p->d_ptr->endTime = QDateTime::fromSecsSinceEpoch(ct.val);
 
   p->d_ptr->fullPath = QString::fromStdString(cefItem.GetFullPath().ToString());
   p->d_ptr->url = QString::fromStdString(cefItem.GetURL().ToString());

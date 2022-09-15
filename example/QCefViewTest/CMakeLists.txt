@@ -60,6 +60,11 @@ if(OS_WINDOWS)
   )
   source_group("Resource Files" ${_RES_FILES})
 
+if (CMAKE_BUILD_TYPE MATCHES RELEASE)
+  add_definitions("-D_ITERATOR_DEBUG_LEVEL=0")
+  add_definitions("-D_HAS_ITERATOR_DEBUGGING=0")
+endif()
+
   add_executable(${PROJECT_NAME} WIN32
     ${_SRC_FILES}
     ${_PLATFORM_SRC_FILES}
@@ -74,12 +79,15 @@ if(OS_WINDOWS)
     Qt${QT_VERSION_MAJOR}::Gui
     Qt${QT_VERSION_MAJOR}::Widgets
     QCefView
+    SetupAPI 
+    delayimp 
+    Cfgmgr32 
+    Propsys 
+    Powrprof 
+    Dbghelp
   )
 
-  target_compile_definitions(${PROJECT_NAME} PRIVATE
-    UNICODE
-    _UNICODE
-  )
+  target_compile_definitions(${PROJECT_NAME} PRIVATE)
 
   set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     PROPERTY
@@ -90,42 +98,7 @@ if(OS_WINDOWS)
     PROPERTIES
     VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
   )
-
-  add_custom_command(TARGET ${PROJECT_NAME}
-    PRE_BUILD
-
-    # Copy QCefView binary to output folder
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    $<TARGET_FILE_DIR:QCefView>
-    $<TARGET_FILE_DIR:${PROJECT_NAME}>
-  )
-
-  add_custom_command(TARGET ${PROJECT_NAME}
-    POST_BUILD
-
-    # Embed the manifest file into the target
-    COMMAND mt.exe
-    -manifest \"${CMAKE_CURRENT_SOURCE_DIR}\\${PROJECT_NAME}.manifest\"
-    -inputresource:\"$<TARGET_FILE:${PROJECT_NAME}>\"
-    -outputresource:\"$<TARGET_FILE:${PROJECT_NAME}>\"
-
-    # Copy QCefView binary to output folder
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    $<TARGET_FILE_DIR:QCefView>
-    $<TARGET_FILE_DIR:${PROJECT_NAME}>
-
-    # Copy the webres directory to output folder
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_CURRENT_BINARY_DIR}/webres
-    $<TARGET_FILE_DIR:${PROJECT_NAME}>/webres
-
-    # Deploy the Qt Application
-    COMMAND ${DEPLOYQT_EXECUTABLE}
-    --no-svg
-    --no-translations
-    --no-compiler-runtime
-    $<TARGET_FILE:${PROJECT_NAME}>
-  )
+  
 endif() # OS_WINDOWS
 
 if(OS_LINUX)

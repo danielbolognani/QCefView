@@ -5,16 +5,25 @@ cmake_minimum_required(VERSION 3.9.1)
 project(QCefView)
 
 option(BUILD_DEMO       "Build the demo"                      OFF)
-option(BUILD_STATIC     "Build QCefView as static library"    OFF)
-option(USE_SANDBOX      "Enable CEF Sandbox"                  OFF)
+option(BUILD_STATIC     "Build QCefView as static library"    ON)
 option(USE_OSR          "Enable CEF Offscreen rendering"      ON)
-option(STATIC_CRT       "Use MultiThreaded linkage for MSVC"  OFF)
+option(STATIC_CRT       "Use MultiThreaded linkage for MSVC"  ON)
 
 
 # Only generate Debug and Release configuration types.
 set(CMAKE_CONFIGURATION_TYPES Debug Release)
 if (NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Debug")
+endif()
+
+if (CMAKE_BUILD_TYPE MATCHES DEBUG)
+  message("DEBUG BUILD " $<CONFIG>)
+  option(USE_SANDBOX      "Enable CEF Sandbox"                  OFF)
+  set(USE_SANDBOX OFF CACHE BOOL "Disable sandbox on Windows" FORCE)
+else()
+  message("RELEASE BUILD" $<CONFIG>)
+  option(USE_SANDBOX      "Enable CEF Sandbox"                  ON)
+  add_definitions(-DCEF_USE_SANDBOX)
 endif()
 
 # Use folders in the resulting project files.
@@ -94,11 +103,14 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Gui Widgets REQUIRED)
 # Config the CEF
 ###############################################################
 if (OS_WINDOWS)
-  add_link_options(/DEBUG)
-  # Disable the sandbox on Windows, because the sandbox.lib is MT which 
-  # is conflict with Qt
-  set(USE_SANDBOX OFF CACHE BOOL "Disable sandbox on Windows" FORCE)
+  if (CMAKE_BUILD_TYPE MATCHES DEBUG)
+    add_link_options(/DEBUG)
+  endif()
+    # Disable the sandbox on Windows, because the sandbox.lib is MT which 
+    # is conflict with Qt
+    #set(USE_SANDBOX OFF CACHE BOOL "Disable sandbox on Windows" FORCE)
   add_compile_options("/M$<IF:$<BOOL:${STATIC_CRT}>,T,D>$<$<CONFIG:Debug>:d>")
+
 else()
   add_compile_options(
     "-g"
