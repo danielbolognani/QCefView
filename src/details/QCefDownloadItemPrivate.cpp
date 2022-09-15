@@ -35,7 +35,7 @@ QCefDownloadItemPrivate::update(QCefDownloadItem* item, CefDownloadItem& cefItem
   p->receivedBytes = cefItem.GetReceivedBytes();
 
   double t = 0;
-  cef_time_t ct;
+  cef_basetime_t ct;
 
 #if (CEF_VERSION_MAJOR) > 104 || (CEF_VERSION_MAJOR == 104 && CEF_VERSION_MINOR > 4)
   cef_time_from_basetime(cefItem.GetStartTime(), &ct);
@@ -79,6 +79,32 @@ QCefDownloadItemPrivate::setBeforeDownloadCallback(QCefDownloadItem* item,
   p->beforeDownloadCallback = beforeDownloadCallback;
 }
 
+  p->d_ptr->isInProgress = cefItem.IsInProgress();
+  p->d_ptr->isComplete = cefItem.IsComplete();
+  p->d_ptr->isCanceled = cefItem.IsCanceled();
+
+  p->d_ptr->percentComplete = cefItem.GetPercentComplete();
+  p->d_ptr->currentSpeed = cefItem.GetCurrentSpeed();
+  p->d_ptr->totalBytes = cefItem.GetTotalBytes();
+  p->d_ptr->receivedBytes = cefItem.GetReceivedBytes();
+
+  double t = 0;
+  cef_basetime_t ct;
+
+  ct = cefItem.GetStartTime();
+  p->d_ptr->startTime = QDateTime::fromSecsSinceEpoch(ct.val);
+
+  ct = cefItem.GetEndTime();
+  p->d_ptr->endTime = QDateTime::fromSecsSinceEpoch(ct.val);
+
+  p->d_ptr->fullPath = QString::fromStdString(cefItem.GetFullPath().ToString());
+  p->d_ptr->url = QString::fromStdString(cefItem.GetURL().ToString());
+  p->d_ptr->originalUrl = QString::fromStdString(cefItem.GetOriginalUrl().ToString());
+  p->d_ptr->suggestedFileName = QString::fromStdString(cefItem.GetSuggestedFileName().ToString());
+  p->d_ptr->contentDisposition = QString::fromStdString(cefItem.GetContentDisposition().ToString());
+  p->d_ptr->mimeType = QString::fromStdString(cefItem.GetMimeType().ToString());
+
+  p->d_ptr->itemCallback = callback;
 void
 QCefDownloadItemPrivate::setDownloadItemCallback(QCefDownloadItem* item,
                                                  CefRefPtr<CefDownloadItemCallback> downloadItemCallback)

@@ -1,6 +1,7 @@
 ﻿#include "../../details/QCefContextPrivate.h"
 
 #include "../../details/QCefConfigPrivate.h"
+#include <include/cef_sandbox_win.h>
 
 bool
 QCefContextPrivate::initializeCef(const QCefConfig* config)
@@ -28,8 +29,7 @@ QCefContextPrivate::initializeCef(const QCefConfig* config)
   auto appDelegate = std::make_shared<CCefAppDelegate>(this, cmdArgs);
   auto bridgeObjectName = config ? config->bridgeObjectName().toStdString() : std::string();
   auto app = new CefViewBrowserApp(bridgeObjectName, appDelegate);
-
-  void* sandboxInfo = nullptr;
+  void* sandbox_info = nullptr;
 #if defined(CEF_USE_SANDBOX)
   // Manage the life span of the sandbox information object. This is necessary
   // for sandbox support on Windows. See cef_sandbox_win.h for complete details.
@@ -38,7 +38,7 @@ QCefContextPrivate::initializeCef(const QCefConfig* config)
 #endif
 
   CefMainArgs main_args(::GetModuleHandle(nullptr));
-  if (!CefInitialize(main_args, cef_settings, app, sandboxInfo)) {
+  if (!CefInitialize(main_args, cef_settings, app, sandbox_info)) {
     assert(0);
     return false;
   }

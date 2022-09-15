@@ -54,8 +54,6 @@ if(OS_WINDOWS)
   )
 
   target_compile_definitions(QCefView PRIVATE
-    UNICODE
-    _UNICODE
     QCEFVIEW_LIB
   )
 
