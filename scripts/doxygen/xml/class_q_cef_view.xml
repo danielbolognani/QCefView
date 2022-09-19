@@ -1457,6 +1457,14 @@
           <type>int</type>
           <declname>level</declname>
         </param>
+        <param>
+          <type>const QString &amp;</type>
+          <declname>source</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>line</declname>
+        </param>
         <briefdescription>
 <para>Gets called on console message from the web content </para>
         </briefdescription>

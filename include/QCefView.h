@@ -325,7 +325,9 @@ signals:
   /// </summary>
   /// <param name="message">The message</param>
   /// <param name="level">The level</param>
-  void consoleMessage(const QString& message, int level);
+  /// <param name="source">The source</param>
+  /// <param name="line">The source line</param>
+  void consoleMessage(const QString& message, int level, const QString& source, int line);
 
   /// <summary>
   /// Gets called on loading progress changed
