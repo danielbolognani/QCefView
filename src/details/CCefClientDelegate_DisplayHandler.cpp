@@ -179,13 +179,14 @@ CCefClientDelegate::statusMessage(CefRefPtr<CefBrowser>& browser, const std::str
 }
 
 void
-CCefClientDelegate::consoleMessage(CefRefPtr<CefBrowser>& browser, const std::string& message, int level)
+CCefClientDelegate::consoleMessage(CefRefPtr<CefBrowser>& browser, const std::string& message, int level, const std::string& source, int line)
 {
   if (!IsValidBrowser(browser))
     return;
 
   auto msg = QString::fromStdString(message);
-  pCefViewPrivate_->q_ptr->consoleMessage(msg, level);
+  auto src = QString::fromStdString(source);
+  pCefViewPrivate_->q_ptr->consoleMessage(msg, level, src, line);
 }
 
 void

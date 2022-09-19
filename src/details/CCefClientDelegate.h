@@ -104,7 +104,7 @@ public:
   virtual void fullscreenModeChanged(CefRefPtr<CefBrowser>& browser, bool fullscreen) override;
   virtual bool tooltipMessage(CefRefPtr<CefBrowser>& browser, const std::string& text) override;
   virtual void statusMessage(CefRefPtr<CefBrowser>& browser, const std::string& value) override;
-  virtual void consoleMessage(CefRefPtr<CefBrowser>& browser, const std::string& message, int level) override;
+  virtual void consoleMessage(CefRefPtr<CefBrowser>& browser, const std::string& message, int level, const std::string& source, int line) override;
   virtual void loadingProgressChanged(CefRefPtr<CefBrowser>& browser, double progress) override;
   virtual bool cursorChanged(CefRefPtr<CefBrowser> browser,
                              CefCursorHandle cursor,
