@@ -275,6 +275,14 @@ QCefView::isDragAndDropEnabled() const
 }
 
 void
+QCefView::findText(const QString& subString, QCefView::CefFindFlags options)
+{
+  Q_D(QCefView);
+
+  d->findText(subString, options);
+}
+
+void
 QCefView::setFocus(Qt::FocusReason reason)
 {
   Q_D(QCefView);

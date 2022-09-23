@@ -197,6 +197,8 @@ public:
 
   bool isOSRModeEnabled() const;
 
+  void findText(const QString& subString, QCefView::CefFindFlags options = {});
+
 protected:
   void onCefBrowserCreated(CefRefPtr<CefBrowser> browser, QWindow* window);
 

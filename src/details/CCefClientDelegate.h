@@ -111,6 +111,25 @@ public:
                              cef_cursor_type_t type,
                              const CefCursorInfo& custom_cursor_info) override;
 
+  virtual bool onPreKeyEvent(CefRefPtr<CefBrowser> browser,
+                             const CefKeyEvent& event,
+                             CefEventHandle os_event,
+                             bool* is_keyboard_shortcut) override;
+  virtual bool onKeyEvent(CefRefPtr<CefBrowser> browser, const CefKeyEvent& event, CefEventHandle os_event) override;
+
+  // FindHandler
+  virtual void findResult(CefRefPtr<CefBrowser> browser,
+                  int identifier,
+                  int count,
+                  const CefRect& selectionRect,
+                  int activeMatchOrdinal,
+                  bool finalUpdate) override;
+
+  // FocusHandler
+  virtual void takeFocus(CefRefPtr<CefBrowser>& browser, bool next) override;
+  virtual bool setFocus(CefRefPtr<CefBrowser>& browser) override;
+  virtual void gotFocus(CefRefPtr<CefBrowser>& browser) override;
+
   // DownloadHander
   virtual void onBeforeDownload(CefRefPtr<CefBrowser> browser,
                                 CefRefPtr<CefDownloadItem> download_item,

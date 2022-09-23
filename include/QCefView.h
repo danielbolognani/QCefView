@@ -59,6 +59,16 @@ public:
   };
   Q_ENUM(CefWindowOpenDisposition)
 
+  /// <summary>
+  /// Represents the CEF find flags
+  /// </summary>
+  enum CefFindFlags
+  {
+    CefFindBackward = 1,
+    CefFindCaseSensitively = 2,
+  };
+  Q_ENUM(CefFindFlags)
+
 public:
   /// <summary>
   /// Constructs a QCefView instance
@@ -244,6 +254,13 @@ public:
   bool isPopupContextMenuDisabled();
 
   /// <summary>
+  /// Find text in browser
+  /// </summary>
+  /// <param name="subString">The search text</param>
+  /// <param name="options">The find flags</param>
+  void findText(const QString& subString, QCefView::CefFindFlags options = {});
+
+  /// <summary>
   /// Detects whether this browser has a devtools opened
   /// </summary>
   /// <returns>True if opend already; otherwise false</returns>
@@ -423,6 +440,17 @@ signals:
   /// </remarks>
   void popupCreated(QCefView* popup);
 
+  /// <summary>
+  /// Gets called on find result.
+  /// </summary>
+  /// <param name="identifier">Search identifier</param>
+  /// <param name="count">Number of occurrences</param>
+  /// <param name="selectionRect">Rect of the current selection</param>
+  /// <param name="activeMatchOrdinal">???</param>
+  /// <param name="finalUpdate">???</param>
+  void findResult(int identifier, int count, const QRect& selectionRect, int activeMatchOrdinal, bool finalUpdate);
+
+public slots:
 protected:
   /// <summary>
   /// Gets called before the popup browser created

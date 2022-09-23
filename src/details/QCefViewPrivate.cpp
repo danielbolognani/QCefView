@@ -203,7 +203,18 @@ QCefViewPrivate::isOSRModeEnabled() const
 }
 
 void
-QCefViewPrivate::onCefBrowserCreated(CefRefPtr<CefBrowser> browser, QWindow* window)
+QCefViewPrivate::findText(const QString& subString, QCefView::CefFindFlags options)
+{
+  if (pCefBrowser_ && !subString.isEmpty()) {
+    pCefBrowser_->GetHost()->Find(subString.toStdString(),
+                                  (options & QCefView::CefFindBackward) != QCefView::CefFindBackward,
+                                  (options & QCefView::CefFindCaseSensitively) == QCefView::CefFindCaseSensitively,
+                                  true);
+  }
+}
+
+void
+QCefViewPrivate::onCefMainBrowserCreated(CefRefPtr<CefBrowser>& browser, QWindow* window)
 {
   // capture the browser
   pCefBrowser_ = browser;
