@@ -164,6 +164,8 @@ public:
 
   void setCefWindowFocus(bool focus);
 
+  void findText(const QString& subString, QCefView::CefFindFlags options = {});
+
 protected:
   void onCefMainBrowserCreated(CefRefPtr<CefBrowser>& browser, QWindow* window);
 

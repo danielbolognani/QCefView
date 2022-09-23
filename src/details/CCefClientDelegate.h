@@ -131,6 +131,14 @@ public:
                              bool* is_keyboard_shortcut) override;
   virtual bool onKeyEvent(CefRefPtr<CefBrowser> browser, const CefKeyEvent& event, CefEventHandle os_event) override;
 
+  // FindHandler
+  virtual void findResult(CefRefPtr<CefBrowser> browser,
+                  int identifier,
+                  int count,
+                  const CefRect& selectionRect,
+                  int activeMatchOrdinal,
+                  bool finalUpdate) override;
+
   // FocusHandler
   virtual void takeFocus(CefRefPtr<CefBrowser>& browser, bool next) override;
   virtual bool setFocus(CefRefPtr<CefBrowser>& browser) override;

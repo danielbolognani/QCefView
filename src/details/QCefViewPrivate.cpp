@@ -212,6 +212,17 @@ QCefViewPrivate::setCefWindowFocus(bool focus)
 }
 
 void
+QCefViewPrivate::findText(const QString& subString, QCefView::CefFindFlags options)
+{
+  if (pCefBrowser_ && !subString.isEmpty()) {
+    pCefBrowser_->GetHost()->Find(subString.toStdString(),
+                                  (options & QCefView::CefFindBackward) != QCefView::CefFindBackward,
+                                  (options & QCefView::CefFindCaseSensitively) == QCefView::CefFindCaseSensitively,
+                                  true);
+  }
+}
+
+void
 QCefViewPrivate::onCefMainBrowserCreated(CefRefPtr<CefBrowser>& browser, QWindow* window)
 {
   // capture the browser

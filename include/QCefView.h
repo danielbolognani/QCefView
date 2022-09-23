@@ -59,6 +59,16 @@ public:
   };
   Q_ENUM(CefWindowOpenDisposition)
 
+  /// <summary>
+  /// Represents the CEF find flags
+  /// </summary>
+  enum CefFindFlags
+  {
+    CefFindBackward = 1,
+    CefFindCaseSensitively = 2,
+  };
+  Q_ENUM(CefFindFlags)
+
 public:
   /// <summary>
   /// Constructs a QCefView instance
@@ -232,6 +242,13 @@ public:
   /// <returns>True to disable; otherwise false</returns>
   bool isPopupContextMenuDisabled();
 
+  /// <summary>
+  /// Find text in browser
+  /// </summary>
+  /// <param name="subString">The search text</param>
+  /// <param name="options">The find flags</param>
+  void findText(const QString& subString, QCefView::CefFindFlags options = {});
+
 signals:
   /// <summary>
   /// Gets called on loading state changed
@@ -375,6 +392,16 @@ signals:
   /// </summary>
   /// <param name="item">The download item</param>
   void updateDownloadItem(QCefDownloadItemPointer item);
+
+  /// <summary>
+  /// Gets called on find result.
+  /// </summary>
+  /// <param name="identifier">Search identifier</param>
+  /// <param name="count">Number of occurrences</param>
+  /// <param name="selectionRect">Rect of the current selection</param>
+  /// <param name="activeMatchOrdinal">???</param>
+  /// <param name="finalUpdate">???</param>
+  void findResult(int identifier, int count, const QRect& selectionRect, int activeMatchOrdinal, bool finalUpdate);
 
 public slots:
   /// <summary>
