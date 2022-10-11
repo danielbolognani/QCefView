@@ -91,6 +91,14 @@ public:
                             const std::vector<CefString>& accept_filters,
                             CefRefPtr<CefFileDialogCallback> callback) override;
 
+  // RequestHandler
+  virtual bool selectClientCertificate(CefRefPtr<CefBrowser> browser,
+                                       bool isProxy,
+                                       const CefString& host,
+                                       int port,
+                                       const CefRequestHandler::X509CertificateList& certificates,
+                                       CefRefPtr<CefSelectClientCertificateCallback> callback) override;
+
   // DisplayHandler
   virtual bool onDragEnter(CefRefPtr<CefBrowser> browser,
                            CefRefPtr<CefDragData> dragData,

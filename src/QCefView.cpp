@@ -283,6 +283,14 @@ QCefView::findText(const QString& subString, QCefView::CefFindFlags options)
 }
 
 void
+QCefView::setClientSelectedCertificate(int certificate)
+{
+  Q_D(QCefView);
+
+  d->setClientSelectedCertificate(certificate);
+}
+
+void
 QCefView::setFocus(Qt::FocusReason reason)
 {
   Q_D(QCefView);

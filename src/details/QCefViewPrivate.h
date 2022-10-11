@@ -31,6 +31,7 @@ class QCefViewPrivate : public QObject
 
 private:
   static QSet<QCefViewPrivate*> sLiveInstances;
+  int clientSelectedCertificate;
 
 public:
   /// <summary>
@@ -322,4 +323,7 @@ public:
   bool sendEventNotifyMessage(int64_t frameId, const QString& name, const QVariantList& args);
 
   bool setPreference(const QString& name, const QVariant& value, const QString& error);
+
+  int getClientSelectedCertificate();
+  void setClientSelectedCertificate(int certificate);
 };

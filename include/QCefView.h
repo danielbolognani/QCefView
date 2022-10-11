@@ -261,6 +261,12 @@ public:
   void findText(const QString& subString, QCefView::CefFindFlags options = {});
 
   /// <summary>
+  /// Set the number of the certificate do be used (after receiving the selectClientCertificate signal)
+  /// </summary>
+  /// <param name="certificate">Certificate number from the list</param>
+  void setClientSelectedCertificate(int certificate);
+
+  /// <summary>
   /// Detects whether this browser has a devtools opened
   /// </summary>
   /// <returns>True if opend already; otherwise false</returns>
@@ -335,6 +341,18 @@ signals:
                  int errorCode,
                  const QString& errorMsg,
                  const QString& failedUrl);
+
+  /// <summary>
+  /// Gets called on trying to load certificates
+  /// </summary>
+  /// <param name="isProxy">Indicates if proxy</param>
+  /// <param name="host">Indicates the host</param>
+  /// <param name="port">Indicates the port</param>
+  /// <param name="certificates">The list of certificates binaries in PEM encoding</param>
+  void selectClientCertificate(bool isProxy,
+                               QString host,
+                               int port,
+                               QList<QByteArray> certificates);
 
   /// <summary>
   /// Gets called on draggable region changed
