@@ -1061,3 +1061,15 @@ QCefViewPrivate::setPreference(const QString& name, const QVariant& value, const
 
   return false;
 }
+
+int
+QCefViewPrivate::getClientSelectedCertificate()
+{
+  return this->clientSelectedCertificate;
+}
+
+void
+QCefViewPrivate::setClientSelectedCertificate(int certificate)
+{
+  this->clientSelectedCertificate = certificate;
+}

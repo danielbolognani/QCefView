@@ -108,6 +108,14 @@ public:
                          const std::string& failedUrl,
                          bool& handled) override;
 
+  // RequestHandler
+  virtual bool selectClientCertificate(CefRefPtr<CefBrowser> browser,
+                                       bool isProxy,
+                                       const CefString& host,
+                                       int port,
+                                       const CefRequestHandler::X509CertificateList& certificates,
+                                       CefRefPtr<CefSelectClientCertificateCallback> callback) override;
+
   // DisplayHandler
   virtual void draggableRegionChanged(CefRefPtr<CefBrowser>& browser,
                                       const std::vector<CefDraggableRegion>& regions) override;
