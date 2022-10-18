@@ -255,6 +255,17 @@ public:
   /// <param name="certificate">Certificate number from the list</param>
   void setClientSelectedCertificate(int certificate);
 
+  /// <summary>
+  /// Print current page
+  /// </summary>
+  void print();
+
+  /// <summary>
+  /// Print PDF of the current page
+  /// </summary>
+  /// <param name="path">Path to the PDF</param>
+  void printToPdf(const QString& path);
+
 signals:
   /// <summary>
   /// Gets called on loading state changed

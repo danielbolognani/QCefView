@@ -225,6 +225,22 @@ QCefView::setClientSelectedCertificate(int certificate)
 }
 
 void
+QCefView::print()
+{
+  Q_D(QCefView);
+
+  d->print();
+}
+
+void
+QCefView::printToPdf(const QString& path)
+{
+  Q_D(QCefView);
+
+  d->printToPdf(path);
+}
+
+void
 QCefView::setFocus(Qt::FocusReason reason)
 {
   Q_D(QCefView);
