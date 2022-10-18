@@ -214,6 +214,24 @@ QCefViewPrivate::findText(const QString& subString, QCefView::CefFindFlags optio
 }
 
 void
+QCefViewPrivate::print()
+{
+  if(pCefBrowser_) {
+    pCefBrowser_->GetHost()->Print();
+  }
+}
+
+void
+QCefViewPrivate::printToPdf(const QString& path)
+{
+  if(pCefBrowser_) {
+    CefPdfPrintSettings settings;
+    settings.margin_type = PDF_PRINT_MARGIN_NONE;
+    pCefBrowser_->GetHost()->PrintToPDF(path.toStdString(), settings, nullptr);
+  }
+}
+
+void
 QCefViewPrivate::onCefMainBrowserCreated(CefRefPtr<CefBrowser>& browser, QWindow* window)
 {
   // capture the browser

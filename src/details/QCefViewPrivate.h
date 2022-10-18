@@ -200,6 +200,10 @@ public:
 
   void findText(const QString& subString, QCefView::CefFindFlags options = {});
 
+  void print();
+
+  void printToPdf(const QString& path);
+
 protected:
   void onCefBrowserCreated(CefRefPtr<CefBrowser> browser, QWindow* window);
 
