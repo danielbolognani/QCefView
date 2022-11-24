@@ -13,6 +13,7 @@ option(STATIC_CRT       "Use MultiThreaded linkage for MSVC"  ON)
 # Only generate Debug and Release configuration types.
 set(CMAKE_CONFIGURATION_TYPES Debug Release)
 if (NOT CMAKE_BUILD_TYPE)
+  message("FORCING DEBUG BUILD")
   set(CMAKE_BUILD_TYPE "Debug")
 endif()
 
@@ -58,6 +59,7 @@ if("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
   # Target architecture.
   if(PROJECT_ARCH STREQUAL "x86_64")
     set(CMAKE_OSX_ARCHITECTURES "x86_64")
+    set(CMAKE_REQUIRED_LINK_OPTIONS "-arch;x86_64")
   elseif(PROJECT_ARCH STREQUAL "arm64")
     set(CMAKE_OSX_ARCHITECTURES "arm64")
   else()
@@ -120,7 +122,7 @@ else()
 endif()
 
 if (OS_MACOS)
-  set(CMAKE_OSX_DEPLOYMENT_TARGET 10.11)
+  set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13)
 endif()
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output/$<CONFIG>/bin)

@@ -153,11 +153,11 @@ if (OS_MACOS)
 
   set_target_properties(QCefView
     PROPERTIES
-      FRAMEWORK                                                   TRUE
+      #FRAMEWORK                                                   TRUE
 
       # compiler settings
-      COMPILE_FLAGS                                               "-fobjc-arc"
-      CLANG_ENABLE_OBJC_ARC                                       "YES"
+      #COMPILE_FLAGS                                               "-fobjc-arc"
+      #CLANG_ENABLE_OBJC_ARC                                       "YES"
 
       # xcode settings
       PUBLIC_HEADER                                               "${QCefView_INCLUDE_HEADERS}"
@@ -171,24 +171,24 @@ if (OS_MACOS)
       XCODE_ATTRIBUTE_LD_RUNPATH_SEARCH_PATHS                     "@executable_path/../Frameworks @loader_path/Frameworks"
   )
 
-  add_custom_command(TARGET QCefView
-    POST_BUILD
+  #add_custom_command(TARGET QCefView
+  #  POST_BUILD
 
       # create plugins directory
-      COMMAND mkdir -p
-        "$<TARGET_BUNDLE_DIR:QCefView>/PlugIns/"
+  #    COMMAND mkdir -p
+  #      "$<TARGET_BUNDLE_DIR:QCefView>/PlugIns/"
 
       #copy the CefViewCore binaries to resource directory
-      COMMAND cp -a
-        "$<TARGET_BUNDLE_DIR:CefViewWing>/../"
-        "$<TARGET_BUNDLE_DIR:QCefView>/PlugIns/"
+  #    COMMAND cp -a
+  #      "$<TARGET_BUNDLE_DIR:CefViewWing>/../"
+  #      "$<TARGET_BUNDLE_DIR:QCefView>/PlugIns/"
       
       #sign the cef framework
-      COMMAND codesign 
-        --force 
-        --sign - 
-        "$<TARGET_BUNDLE_DIR:QCefView>/PlugIns/Chromium Embedded Framework.framework"
-  )
+  #    COMMAND codesign 
+  #      --force 
+  #      --sign - 
+  #      "$<TARGET_BUNDLE_DIR:QCefView>/PlugIns/Chromium Embedded Framework.framework"
+  #)
 endif()  # OS_MACOS
 
 if (USE_OSR)
