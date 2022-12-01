@@ -171,6 +171,8 @@ public:
 
   void printToPdf(const QString& path);
 
+  void getURL(QString& url);
+
 protected:
   void onCefMainBrowserCreated(CefRefPtr<CefBrowser>& browser, QWindow* window);
 

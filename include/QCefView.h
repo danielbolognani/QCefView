@@ -266,6 +266,11 @@ public:
   /// <param name="path">Path to the PDF</param>
   void printToPdf(const QString& path);
 
+  /// <summary>
+  /// Return the current loading (or loaded) url
+  /// <param name="item">Current url</param>
+  void getCurrentURL(QString& url);
+
 signals:
   /// <summary>
   /// Gets called on loading state changed

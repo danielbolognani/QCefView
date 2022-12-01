@@ -143,27 +143,27 @@ QCefViewPrivate::createCefBrowser(QCefView* view, const QString url, const QCefS
 #endif
 
   // create browser object
-  /*bool success = CefBrowserHost::CreateBrowser(window_info,       // window info
+  bool success = CefBrowserHost::CreateBrowser(window_info,       // window info
                                                pClient,           // handler
                                                url.toStdString(), // url
                                                browserSettings,   // settings
                                                nullptr,
                                                CefRequestContext::GetGlobalContext());
-  */
-  CefRefPtr<CefBrowser> brw = CefBrowserHost::CreateBrowserSync(window_info,       // window info
+  
+  /* CefRefPtr<CefBrowser> brw = CefBrowserHost::CreateBrowserSync(window_info,       // window info
                                                    pClient,           // handler
                                                    url.toStdString(), // url
                                                    browserSettings,   // settings
                                                    nullptr,
-                                                   CefRequestContext::GetGlobalContext());
+                                                   CefRequestContext::GetGlobalContext());*/
 
-  onCefMainBrowserCreated(brw, (QWindow*)q_ptr->window());
+  //onCefMainBrowserCreated(brw, (QWindow*)q_ptr->window());
 
-//  Q_ASSERT_X(success, "QCefViewPrivate::createBrowser", "Failed to create cef browser");
-//  if (!success) {
-//    qWarning("Failed to create cef browser");
-//    return;
-//  }
+  Q_ASSERT_X(success, "QCefViewPrivate::createBrowser", "Failed to create cef browser");
+  if (!success) {
+    qWarning("Failed to create cef browser");
+    return;
+  }
 
   // install global event filter
   qApp->installEventFilter(this);
@@ -247,6 +247,15 @@ QCefViewPrivate::printToPdf(const QString& path)
     CefPdfPrintSettings settings;
     settings.margin_type = PDF_PRINT_MARGIN_NONE;
     pCefBrowser_->GetHost()->PrintToPDF(path.toStdString(), settings, nullptr);
+  }
+}
+
+void
+QCefViewPrivate::getURL(QString& url)
+{
+  if (pCefBrowser_) {
+    CefString cefRet = pCefBrowser_->GetMainFrame()->GetURL().ToString();
+    url = cefRet.ToString().c_str();
   }
 }
 
