@@ -307,6 +307,14 @@ QCefView::printToPdf(const QString& path)
 }
 
 void
+QCefView::getCurrentURL(QString& url)
+{
+  Q_D(QCefView);
+
+  d->getURL(url);
+}
+
+void
 QCefView::setFocus(Qt::FocusReason reason)
 {
   Q_D(QCefView);

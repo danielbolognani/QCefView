@@ -278,6 +278,11 @@ public:
   void printToPdf(const QString& path);
 
   /// <summary>
+  /// Return the current loading (or loaded) url
+  /// <param name="item">Current url</param>
+  void getCurrentURL(QString& url);
+
+  /// <summary>
   /// Detects whether this browser has a devtools opened
   /// </summary>
   /// <returns>True if opend already; otherwise false</returns>
