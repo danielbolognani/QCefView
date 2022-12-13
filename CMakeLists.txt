@@ -72,6 +72,7 @@ elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
   set(OS_POSIX 1)
   add_definitions(-DOS_LINUX=1 -DOS_POSIX=1)
 
+  set(CMAKE_FIND_ROOT_PATH /Qt6/6.2.6/depends)
   # Target architecture.
   if(PROJECT_ARCH STREQUAL "x86_64")
     # x86 64-bit architecture.
