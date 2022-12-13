@@ -4,7 +4,7 @@
 
 BUILD_PROJECT=0
 
-BUILD_DIR="$(pwd)/.build/linux.x86_64.release"
+BUILD_DIR="$(pwd)/.build/linux.x86_64.debug"
 
 while getopts bi flag
 do
@@ -14,7 +14,7 @@ do
 done
 
 echo ============== Config project ==============
-cmake -G "Unix Makefiles" -S . -B "${BUILD_DIR}" -DCMAKE_BUILD_TYPE=Release -DPROJECT_ARCH=x86_64 -DBUILD_DEMO=ON -DUSE_SANDBOX=ON -DCMAKE_INSTALL_PREFIX:PATH="$(pwd)/out/linux.x86_64.release"
+cmake -G "Unix Makefiles" -S . -B "${BUILD_DIR}" -DCMAKE_BUILD_TYPE=Debug -DPROJECT_ARCH=x86_64 -DBUILD_DEMO=ON -DUSE_SANDBOX=ON -DCMAKE_INSTALL_PREFIX:PATH="$(pwd)/out/linux.x86_64.debug"
 
 if [ ${BUILD_PROJECT} -eq 1 ] 
 then
