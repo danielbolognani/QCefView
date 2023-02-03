@@ -1,13 +1,16 @@
-#include <QApplication>
+﻿#include <QApplication>
 
 #include <QCefContext.h>
 
 #include "MainWindow.h"
 
+QApplication* app;
+
 int
 main(int argc, char* argv[])
 {
-  QApplication a(argc, argv);
+  //QApplication a(argc, argv);
+  app = new QApplication(argc, argv);
 
   // build QCefConfig
   QCefConfig config;
@@ -29,10 +32,10 @@ main(int argc, char* argv[])
   config.addCommandLineSwitchWithValue("disable-features", "BlinkGenPropertyTrees,TranslateUI,site-per-process");
 
   // initialize QCefContext instance with config
-  QCefContext cefContext(&a, argc, argv, &config);
+  QCefContext cefContext(app, argc, argv, &config);
 
   MainWindow w;
   w.show();
 
-  return a.exec();
+  return app->exec();
 }

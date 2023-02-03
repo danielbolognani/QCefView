@@ -5,4 +5,5 @@ cmake -S . ^
 -DPROJECT_ARCH=x86_64 ^
 -DBUILD_DEMO=ON ^
 -DCMAKE_BUILD_TYPE=RELEASE ^
--DCMAKE_INSTALL_PREFIX:PATH="%cd%/out/windows.x86_64.release"
+-DCMAKE_INSTALL_PREFIX:PATH="%cd%/out/windows.x86_64.release" ^
+-DZLIB_ROOT=c:/qt6/build/depends

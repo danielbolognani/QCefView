@@ -11,6 +11,8 @@
 
 #include <QCefContext.h>
 
+extern QApplication* app;
+
 #define URL_ROOT "http://QCefViewDoc"
 #define INDEX_URL URL_ROOT "/index.html"
 #define TUTORIAL_URL URL_ROOT "/tutorial.html"
@@ -64,6 +66,7 @@ MainWindow::createCefView()
   // create the QCefView widget and add it to the layout container
   // cefViewWidget = new CefViewWidget(INDEX_URL, &setting);
 
+  isbrwLoaded = false;
   // this site is for test web events
   cefViewWidget = new CefViewWidget("http://xcal1.vodafone.co.uk/", &setting, this);
 
@@ -99,9 +102,13 @@ MainWindow::createCefView()
 
   connect(cefViewWidget, &QCefView::loadStart, this, &MainWindow::onLoadStart);
   connect(cefViewWidget, &QCefView::loadEnd, this, &MainWindow::onLoadEnd);
-  connect(cefViewWidget, &QCefView::loadError, this, &MainWindow::onLoadError);
+  //connect(cefViewWidget, &QCefView::loadError, this, &MainWindow::onLoadError);
   connect(cefViewWidget, &QCefView::newDownloadItem, this, &MainWindow::onNewDownloadItem);
   connect(cefViewWidget, &QCefView::updateDownloadItem, this, &MainWindow::onUpdateDownloadItem);
+
+  while (!isbrwLoaded) {
+    app->processEvents();
+  }
   //*/
 }
 
@@ -189,8 +196,11 @@ MainWindow::onLoadStart(int browserId, qint64 frameId, bool isMainFrame, int tra
 void
 MainWindow::onLoadEnd(int browserId, qint64 frameId, bool isMainFrame, int httpStatusCode)
 {
+  QString cUrl;
+  cefViewWidget->getCurrentURL(cUrl);
   qDebug() << "onLoadEnd, browserId:" << browserId << ", frameId:" << frameId << ", isMainFrame:" << isMainFrame
-           << ", httpStatusCode:" << httpStatusCode;
+           << ", httpStatusCode:" << httpStatusCode << ", URL:" << cUrl;
+  isbrwLoaded = true;
 }
 
 void
@@ -203,6 +213,7 @@ MainWindow::onLoadError(int browserId,
 {
   qDebug() << "onLoadError, browserId:" << browserId << ", frameId:" << frameId << ", isMainFrame:" << isMainFrame
            << ", errorCode:" << errorCode;
+  qDebug() << errorMsg;
 }
 
 void

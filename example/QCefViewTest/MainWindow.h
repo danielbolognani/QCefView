@@ -16,6 +16,8 @@ public:
   ~MainWindow();
 
 protected:
+  bool isbrwLoaded;
+
   void createCefView();
 
   // QCefView slots
