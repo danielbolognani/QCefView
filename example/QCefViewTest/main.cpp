@@ -4,11 +4,13 @@
 
 #include "MainWindow.h"
 
+QApplication* app;
+
 int
 main(int argc, char* argv[])
 {
-  // create QApplication instance
-  QApplication a(argc, argv);
+  //QApplication a(argc, argv);
+  app = new QApplication(argc, argv);
 
   // build QCefConfig
   QCefConfig config;
@@ -43,13 +45,12 @@ main(int argc, char* argv[])
 
   // create QCefContext instance with config,
   // the lifecycle of cefContext must be the same as QApplication instance
-  QCefContext cefContext(&a, argc, argv, &config);
+  QCefContext cefContext(app, argc, argv, &config);
 
   // application window
   MainWindow w;
   w.show();
 
-  // flying
-  return a.exec();
+  return app->exec();
 }
 

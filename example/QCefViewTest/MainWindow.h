@@ -17,6 +17,9 @@ public:
   ~MainWindow();
 
 protected:
+  bool isbrwLoaded;
+
+  void createCefView();
   void createLeftCefView();
   void createRightCefView();
   void setupWindow();

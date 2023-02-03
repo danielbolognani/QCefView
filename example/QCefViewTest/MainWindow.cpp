@@ -11,6 +11,8 @@
 
 #include <QCefContext.h>
 
+extern QApplication* app;
+
 #define URL_ROOT "http://QCefViewDoc"
 #define INDEX_URL URL_ROOT "/index.html"
 #define TUTORIAL_URL URL_ROOT "/tutorial.html"
@@ -100,6 +102,7 @@ MainWindow::createRightCefView()
   // create the QCefView widget and add it to the layout container
   // m_pRightCefViewWidget = new CefViewWidget("https://cefview.github.io/QCefView/", &setting, this);
 
+  isbrwLoaded = false;
   // this site is for test web events
   m_pRightCefViewWidget = new CefViewWidget("", &setting, this);
   m_pRightCefViewWidget->navigateToUrl("https://fastest.fish/test-files");
@@ -124,6 +127,25 @@ MainWindow::createRightCefView()
   // m_pRightCefViewWidget->setContextMenuPolicy(Qt::CustomContextMenu);
   // m_pRightCefViewWidget->setContextMenuPolicy(Qt::PreventContextMenu);
 
+  // connect the invokeMethod to the slot
+  connect(cefViewWidget, &QCefView::invokeMethod, this, &MainWindow::onInvokeMethod);
+
+  // connect the cefQueryRequest to the slot
+  connect(cefViewWidget, &QCefView::cefQueryRequest, this, &MainWindow::onQCefQueryRequest);
+
+  connect(cefViewWidget, &QCefView::draggableRegionChanged, this, &MainWindow::onDraggableRegionChanged);
+
+  connect(cefViewWidget, &QCefView::reportJavascriptResult, this, &MainWindow::onJavascriptResult);
+
+  connect(cefViewWidget, &QCefView::loadStart, this, &MainWindow::onLoadStart);
+  connect(cefViewWidget, &QCefView::loadEnd, this, &MainWindow::onLoadEnd);
+  //connect(cefViewWidget, &QCefView::loadError, this, &MainWindow::onLoadError);
+  connect(cefViewWidget, &QCefView::newDownloadItem, this, &MainWindow::onNewDownloadItem);
+  connect(cefViewWidget, &QCefView::updateDownloadItem, this, &MainWindow::onUpdateDownloadItem);
+
+  while (!isbrwLoaded) {
+    app->processEvents();
+  }
   //*/
 }
 
@@ -204,8 +226,11 @@ MainWindow::onLoadStart(int browserId, qint64 frameId, bool isMainFrame, int tra
 void
 MainWindow::onLoadEnd(int browserId, qint64 frameId, bool isMainFrame, int httpStatusCode)
 {
+  QString cUrl;
+  cefViewWidget->getCurrentURL(cUrl);
   qDebug() << "onLoadEnd, browserId:" << browserId << ", frameId:" << frameId << ", isMainFrame:" << isMainFrame
-           << ", httpStatusCode:" << httpStatusCode;
+           << ", httpStatusCode:" << httpStatusCode << ", URL:" << cUrl;
+  isbrwLoaded = true;
 }
 
 void
@@ -218,6 +243,7 @@ MainWindow::onLoadError(int browserId,
 {
   qDebug() << "onLoadError, browserId:" << browserId << ", frameId:" << frameId << ", isMainFrame:" << isMainFrame
            << ", errorCode:" << errorCode;
+  qDebug() << errorMsg;
 }
 
 void
