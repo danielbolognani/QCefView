@@ -118,7 +118,7 @@ if(OS_WINDOWS)
 
 else()
   add_compile_options(
-    "-g"
+    "$<$<CONFIG:DEBUG>:-g>"
     "$<$<CONFIG:DEBUG>:-O0>"
     "$<$<CONFIG:RELEASE>:-O3>"
   )
