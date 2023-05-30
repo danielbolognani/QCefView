@@ -685,7 +685,7 @@ QCefViewPrivate::onViewInputMethodEvent(QInputMethodEvent* event)
   } else if (!composingText.isEmpty()) {
     CefCompositionUnderline underline;
     underline.background_color = 0;
-    underline.range = { 0, (int)composingText.length() };
+    underline.range = { 0, static_cast<int>(composingText.length()) };
 
     CefRange selectionRange;
     for (auto& attr : event->attributes()) {
