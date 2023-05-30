@@ -799,12 +799,12 @@ QCefViewPrivate::onViewInputMethodEvent(QInputMethodEvent* event)
     auto composingText = event->preeditString();
     auto composedText = event->commitString();
 
-    if (!composedText.isEmpty()) {
-      pCefBrowser_->GetHost()->ImeCommitText(composedText.toStdString(), CefRange(UINT32_MAX, UINT32_MAX), 0);
-    } else if (!composingText.isEmpty()) {
-      CefCompositionUnderline underline;
-      underline.background_color = 0;
-      underline.range = { 0, static_cast<decltype(CefRange::to)>(composingText.length()) };
+  if (!composedText.isEmpty()) {
+    pCefBrowser_->GetHost()->ImeCommitText(composedText.toStdString(), CefRange(UINT32_MAX, UINT32_MAX), 0);
+  } else if (!composingText.isEmpty()) {
+    CefCompositionUnderline underline;
+    underline.background_color = 0;
+    underline.range = { 0, static_cast<int>(composingText.length()) };
 
       CefRange selectionRange;
       for (auto& attr : event->attributes()) {

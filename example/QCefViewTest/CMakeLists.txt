@@ -85,6 +85,7 @@ endif()
     Propsys 
     Powrprof 
     Dbghelp
+    ntdll
   )
 
   target_compile_definitions(${PROJECT_NAME} PRIVATE)
