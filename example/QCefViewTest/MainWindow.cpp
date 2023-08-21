@@ -128,25 +128,32 @@ MainWindow::createRightCefView()
   // m_pRightCefViewWidget->setContextMenuPolicy(Qt::PreventContextMenu);
 
   // connect the invokeMethod to the slot
-  connect(cefViewWidget, &QCefView::invokeMethod, this, &MainWindow::onInvokeMethod);
+  connect(m_pRightCefViewWidget, &QCefView::invokeMethod, this, &MainWindow::onInvokeMethod);
 
   // connect the cefQueryRequest to the slot
-  connect(cefViewWidget, &QCefView::cefQueryRequest, this, &MainWindow::onQCefQueryRequest);
+  connect(m_pRightCefViewWidget, &QCefView::cefQueryRequest, this, &MainWindow::onQCefQueryRequest);
 
-  connect(cefViewWidget, &QCefView::draggableRegionChanged, this, &MainWindow::onDraggableRegionChanged);
+  //connect(m_pRightCefViewWidget, &QCefView::draggableRegionChanged, this, &MainWindow::onDraggableRegionChanged);
 
-  connect(cefViewWidget, &QCefView::reportJavascriptResult, this, &MainWindow::onJavascriptResult);
+  connect(m_pRightCefViewWidget, &QCefView::reportJavascriptResult, this, &MainWindow::onJavascriptResult);
 
-  connect(cefViewWidget, &QCefView::loadStart, this, &MainWindow::onLoadStart);
-  connect(cefViewWidget, &QCefView::loadEnd, this, &MainWindow::onLoadEnd);
+  connect(m_pRightCefViewWidget, &QCefView::loadStart, this, &MainWindow::onLoadStart);
+  connect(m_pRightCefViewWidget, &QCefView::loadEnd, this, &MainWindow::onLoadEnd);
   //connect(cefViewWidget, &QCefView::loadError, this, &MainWindow::onLoadError);
-  connect(cefViewWidget, &QCefView::newDownloadItem, this, &MainWindow::onNewDownloadItem);
-  connect(cefViewWidget, &QCefView::updateDownloadItem, this, &MainWindow::onUpdateDownloadItem);
+  connect(m_pRightCefViewWidget, &CefViewWidget::newDownloadItem, this, &MainWindow::onNewDownloadItem);
+  connect(m_pRightCefViewWidget, &CefViewWidget::updateDownloadItem, this, &MainWindow::onUpdateDownloadItem);
 
   while (!isbrwLoaded) {
     app->processEvents();
   }
   //*/
+}
+
+void
+MainWindow::onDraggableRegionChanged(const QRegion& draggableRegion, const QRegion& nonDraggableRegion)
+{
+  draggableRegion_ = draggableRegion;
+  nonDraggableRegion_ = nonDraggableRegion;
 }
 
 void
@@ -227,7 +234,7 @@ void
 MainWindow::onLoadEnd(int browserId, qint64 frameId, bool isMainFrame, int httpStatusCode)
 {
   QString cUrl;
-  cefViewWidget->getCurrentURL(cUrl);
+  m_pRightCefViewWidget->getCurrentURL(cUrl);
   qDebug() << "onLoadEnd, browserId:" << browserId << ", frameId:" << frameId << ", isMainFrame:" << isMainFrame
            << ", httpStatusCode:" << httpStatusCode << ", URL:" << cUrl;
   isbrwLoaded = true;
@@ -260,6 +267,34 @@ MainWindow::onBtnReloadRightViewClicked()
   if (m_pRightCefViewWidget) {
     m_pRightCefViewWidget->navigateToUrl("https://www.google.com");
   }
+}
+
+void
+MainWindow::onNewDownloadItem(const QSharedPointer<QCefDownloadItem>& item, const QString& suggestedName)
+{
+  qDebug() << "onNewDownloadItem:"
+           << "  id: " << item->id() << "\n"
+           << "  name: " << item->suggestedFileName() << "\n"
+           << "  path: " << item->fullPath() << "\n"
+           << "  percent: " << item->percentComplete() << "%, " << item->totalBytes() << "/" << item->receivedBytes()
+           << "\n"
+           << "  canceled: " << item->isCanceled() << "\n"
+           << "  complete: " << item->isComplete();
+
+  item->start("", true);
+}
+
+void
+MainWindow::onUpdateDownloadItem(const QSharedPointer<QCefDownloadItem>& item)
+{
+  qDebug() << "onNewDownloadItem:"
+           << "  id: " << item->id() << "\n"
+           << "  name: " << item->suggestedFileName() << "\n"
+           << "  path: " << item->fullPath() << "\n"
+           << "  percent: " << item->percentComplete() << "%, " << item->totalBytes() << "/" << item->receivedBytes()
+           << "\n"
+           << "  canceled: " << item->isCanceled() << "\n"
+           << "  complete: " << item->isComplete();
 }
 
 void

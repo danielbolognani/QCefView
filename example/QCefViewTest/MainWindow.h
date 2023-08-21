@@ -26,6 +26,7 @@ protected:
 
   // QCefView slots
 protected slots:
+  void onDraggableRegionChanged(const QRegion& draggableRegion, const QRegion& nonDraggableRegion);
 
   void onInvokeMethod(int browserId, int64_t frameId, const QString& method, const QVariantList& arguments);
 
@@ -45,6 +46,10 @@ protected slots:
                    int errorCode,
                    const QString& errorMsg,
                    const QString& failedUrl);
+
+  void onNewDownloadItem(const QSharedPointer<QCefDownloadItem>& item, const QString& suggestedName);
+
+  void onUpdateDownloadItem(const QSharedPointer<QCefDownloadItem>& item);
 
   // ui slots
 protected slots:
@@ -70,6 +75,9 @@ private:
 
   CefViewWidget* m_pLeftCefViewWidget = nullptr;
   CefViewWidget* m_pRightCefViewWidget = nullptr;
+
+  QRegion draggableRegion_;
+  QRegion nonDraggableRegion_;
 };
 
 #endif // QCEFVIEWTEST_H

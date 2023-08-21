@@ -189,14 +189,6 @@ if(OS_MACOS)
   #)
 endif()  # OS_MACOS
 
-    # sign the cef framework
-    COMMAND codesign
-    --force
-    --sign -
-    "$<TARGET_BUNDLE_DIR:QCefView>/Resources/PlugIns/Chromium Embedded Framework.framework"
-  )
-endif() # OS_MACOS
-
 target_compile_definitions(QCefView PRIVATE NOMINMAX)
 
 target_include_directories(QCefView PRIVATE

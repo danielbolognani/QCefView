@@ -34,7 +34,7 @@ QCefContextPrivate::initializeCef(const QCefConfig* config)
   // Manage the life span of the sandbox information object. This is necessary
   // for sandbox support on Windows. See cef_sandbox_win.h for complete details.
   static CefScopedSandboxInfo scopedSandbox;
-  sandboxInfo = scopedSandbox.sandbox_info();
+  sandbox_info = scopedSandbox.sandbox_info();
 #endif
 
   CefMainArgs main_args(::GetModuleHandle(nullptr));

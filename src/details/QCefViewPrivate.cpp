@@ -251,7 +251,7 @@ QCefViewPrivate::getURL(QString& url)
 }
 
 void
-QCefViewPrivate::onCefMainBrowserCreated(CefRefPtr<CefBrowser>& browser, QWindow* window)
+QCefViewPrivate::onCefBrowserCreated(CefRefPtr<CefBrowser> browser, QWindow* window)
 {
   // capture the browser
   pCefBrowser_ = browser;
