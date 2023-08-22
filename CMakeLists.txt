@@ -16,6 +16,7 @@ set(CMAKE_CONFIGURATION_TYPES Debug Release)
 
 if(NOT CMAKE_BUILD_TYPE)
   message("FORCING DEBUG BUILD")
+  message("FORCING DEBUG BUILD")
   set(CMAKE_BUILD_TYPE "Debug")
 endif()
 

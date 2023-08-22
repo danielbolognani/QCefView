@@ -248,6 +248,8 @@ if(OS_MACOS)
     QCefView
     ${CMAKE_BINARY_DIR}/CefViewCore/output/$<CONFIG>/lib/libCefViewCore.a 
     ${CMAKE_BINARY_DIR}/CefViewCore/output/$<CONFIG>/lib/libcef_dll_wrapper.a
+    ${CMAKE_BINARY_DIR}/CefViewCore/output/$<CONFIG>/lib/libCefViewCore.a 
+    ${CMAKE_BINARY_DIR}/CefViewCore/output/$<CONFIG>/lib/libcef_dll_wrapper.a
   )
 endif()
 

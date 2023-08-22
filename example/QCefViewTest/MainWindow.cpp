@@ -146,6 +146,7 @@ MainWindow::createRightCefView()
   while (!isbrwLoaded) {
     app->processEvents();
   }
+
   //*/
 }
 
