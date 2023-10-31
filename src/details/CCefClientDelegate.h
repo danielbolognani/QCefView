@@ -60,7 +60,7 @@ public:
                                   const CefRefPtr<CefListValue>& arguments) override;
   virtual void reportJSResult(CefRefPtr<CefBrowser>& browser,
                               int64_t frameId,
-                              int64_t contextId,
+                              const std::string& context,
                               const CefRefPtr<CefValue>& result) override;
 
   // ContextMenuHandler
@@ -100,15 +100,9 @@ public:
                                        CefRefPtr<CefSelectClientCertificateCallback> callback) override;
 
   // DisplayHandler
-  virtual bool onDragEnter(CefRefPtr<CefBrowser> browser,
-                           CefRefPtr<CefDragData> dragData,
-                           CefDragHandler::DragOperationsMask mask) override;
-  virtual void draggableRegionChanged(CefRefPtr<CefBrowser>& browser,
-                                      const std::vector<CefDraggableRegion>& regions) override;
   virtual void addressChanged(CefRefPtr<CefBrowser>& browser, int64_t frameId, const std::string& url) override;
   virtual void titleChanged(CefRefPtr<CefBrowser>& browser, const std::string& title) override;
   virtual void faviconURLChanged(CefRefPtr<CefBrowser> browser, const std::vector<CefString>& icon_urls) override;
-  virtual void faviconChanged(CefRefPtr<CefImage> image) override;
   virtual void fullscreenModeChanged(CefRefPtr<CefBrowser>& browser, bool fullscreen) override;
   virtual bool tooltipMessage(CefRefPtr<CefBrowser>& browser, const std::string& text) override;
   virtual void statusMessage(CefRefPtr<CefBrowser>& browser, const std::string& value) override;
@@ -141,6 +135,12 @@ public:
   virtual void onDownloadUpdated(CefRefPtr<CefBrowser> browser,
                                  CefRefPtr<CefDownloadItem> download_item,
                                  CefRefPtr<CefDownloadItemCallback> callback) override;
+  // DragHandler
+  virtual bool onDragEnter(CefRefPtr<CefBrowser> browser,
+                           CefRefPtr<CefDragData> dragData,
+                           CefDragHandler::DragOperationsMask mask) override;
+  virtual void draggableRegionChanged(CefRefPtr<CefBrowser>& browser,
+                                      const std::vector<CefDraggableRegion>& regions) override;
 
   // KeyboardHandler
   virtual bool onPreKeyEvent(CefRefPtr<CefBrowser> browser,
@@ -157,9 +157,10 @@ public:
                              CefLifeSpanHandler::WindowOpenDisposition targetDisposition,
                              CefWindowInfo& windowInfo,
                              CefBrowserSettings& settings,
-                             bool& DisableJavascriptAccess) override;
+                             bool& disableJavascriptAccess) override;
   virtual void onAfterCreate(CefRefPtr<CefBrowser>& browser) override;
   virtual bool doClose(CefRefPtr<CefBrowser> browser) override;
+  virtual bool requestClose(CefRefPtr<CefBrowser> browser) override;
   virtual void onBeforeClose(CefRefPtr<CefBrowser> browser) override;
 
   // LoadHandler

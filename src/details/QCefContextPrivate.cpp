@@ -1,4 +1,4 @@
-﻿#include "QCefContextPrivate.h"
+#include "QCefContextPrivate.h"
 
 #pragma region qt_headers
 #include <QThread>
@@ -162,7 +162,7 @@ QCefContextPrivate::onAboutToQuit()
     // cleaned up. If yes then exit the event loop to continue the
     // application exit process
     QTimer exitCheckTimer;
-    this->connect(&exitCheckTimer, &QTimer::timeout, [&]() {
+    connect(&exitCheckTimer, &QTimer::timeout, [&]() {
       // if all browser were closed and there is only one reference to the
       // CefBrowserClient object (only referred by QCefContextPrivate instance),
       // we can quit safely
@@ -178,11 +178,9 @@ QCefContextPrivate::onAboutToQuit()
   }
 }
 
-#if defined(Q_OS_MACOS)
 void
 QCefContextPrivate::performCefLoopWork()
 {
   // process cef work
   CefDoMessageLoopWork();
 }
-#endif

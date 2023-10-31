@@ -17,11 +17,6 @@ public:
 
   ~CefViewWidget();
 
-signals:
-  void newDownloadItem(const QSharedPointer<QCefDownloadItem>& item, const QString& suggestedName);
-
-  void updateDownloadItem(const QSharedPointer<QCefDownloadItem>& item);
-
 protected slots:
   void onScreenChanged(QScreen* screen);
 
@@ -30,12 +25,13 @@ protected slots:
   void onDraggableRegionChanged(const QRegion& draggableRegion, const QRegion& nonDraggableRegion);
 
 protected:
-  bool onBeforePopup(qint64 frameId,
-                     const QString& targetUrl,
-                     const QString& targetFrameName,
-                     QCefView::CefWindowOpenDisposition targetDisposition,
-                     QRect& rect,
-                     QCefSetting& settings) override;
+  bool onNewPopup(qint64 sourceFrameId,
+                  const QString& targetUrl,
+                  QString& targetFrameName,
+                  QCefView::CefWindowOpenDisposition targetDisposition,
+                  QRect& rect,
+                  QCefSetting& settings,
+                  bool& disableJavascriptAccess) override;
 
   void onNewDownloadItem(const QSharedPointer<QCefDownloadItem>& item, const QString& suggestedName) override;
 

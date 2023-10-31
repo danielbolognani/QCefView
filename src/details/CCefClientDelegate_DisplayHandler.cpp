@@ -65,37 +65,6 @@ mapCursorShape(cef_cursor_type_t& type)
   return sCursorTable[type];
 }
 
-bool
-CCefClientDelegate::onDragEnter(CefRefPtr<CefBrowser> browser,
-                                CefRefPtr<CefDragData> dragData,
-                                CefDragHandler::DragOperationsMask mask)
-{
-  // Return false for default drag handling behavior or true to cancel the drag event.
-  return !pCefViewPrivate_->q_ptr->isDragAndDropEnabled();
-}
-
-void
-CCefClientDelegate::draggableRegionChanged(CefRefPtr<CefBrowser>& browser,
-                                           const std::vector<CefDraggableRegion>& regions)
-{
-  if (!IsValidBrowser(browser))
-    return;
-
-  // Determine new draggable region.
-  QRegion draggableRegion;
-  QRegion nonDraggableRegion;
-  std::vector<CefDraggableRegion>::const_iterator it = regions.begin();
-  for (; it != regions.end(); ++it) {
-    if (it->draggable) {
-      draggableRegion += QRegion(it->bounds.x, it->bounds.y, it->bounds.width, it->bounds.height);
-    } else {
-      nonDraggableRegion += QRegion(it->bounds.x, it->bounds.y, it->bounds.width, it->bounds.height);
-    }
-  }
-
-  pCefViewPrivate_->q_ptr->draggableRegionChanged(draggableRegion, nonDraggableRegion);
-}
-
 void
 CCefClientDelegate::addressChanged(CefRefPtr<CefBrowser>& browser, int64_t frameId, const std::string& url)
 {
@@ -103,7 +72,7 @@ CCefClientDelegate::addressChanged(CefRefPtr<CefBrowser>& browser, int64_t frame
     return;
 
   auto u = QString::fromStdString(url);
-  pCefViewPrivate_->q_ptr->addressChanged(frameId, u);
+  emit pCefViewPrivate_->q_ptr->addressChanged(frameId, u);
 }
 
 void
@@ -113,7 +82,7 @@ CCefClientDelegate::titleChanged(CefRefPtr<CefBrowser>& browser, const std::stri
     return;
 
   auto t = QString::fromStdString(title);
-  pCefViewPrivate_->q_ptr->titleChanged(t);
+  emit pCefViewPrivate_->q_ptr->titleChanged(t);
 }
 
 void
@@ -127,29 +96,7 @@ CCefClientDelegate::faviconURLChanged(CefRefPtr<CefBrowser> browser, const std::
     urls.append(QString::fromStdString(iconUrl.ToString()));
   }
 
-  pCefViewPrivate_->q_ptr->faviconURLChanged(urls);
-}
-
-void
-CCefClientDelegate::faviconChanged(CefRefPtr<CefImage> image)
-{
-  QIcon icon;
-
-  int width = 0;
-  int height = 0;
-  CefRefPtr<CefBinaryValue> data = image->GetAsPNG(1.0, true, width, height);
-  int bufsize = (int)data->GetSize();
-  if (bufsize > 0) {
-    QByteArray buffer(bufsize + 4, char(0));
-    data->GetData(buffer.data(), bufsize, 0);
-
-    QBitmap bitmap;
-    bitmap.loadFromData(buffer);
-
-    icon = QIcon(bitmap);
-  }
-
-  pCefViewPrivate_->q_ptr->faviconChanged(icon);
+  emit pCefViewPrivate_->q_ptr->faviconURLChanged(urls);
 }
 
 void
@@ -158,7 +105,7 @@ CCefClientDelegate::fullscreenModeChanged(CefRefPtr<CefBrowser>& browser, bool f
   if (!IsValidBrowser(browser))
     return;
 
-  pCefViewPrivate_->q_ptr->fullscreenModeChanged(fullscreen);
+  emit pCefViewPrivate_->q_ptr->fullscreenModeChanged(fullscreen);
 }
 
 bool
@@ -175,7 +122,7 @@ CCefClientDelegate::statusMessage(CefRefPtr<CefBrowser>& browser, const std::str
     return;
 
   auto msg = QString::fromStdString(value);
-  pCefViewPrivate_->q_ptr->statusMessage(msg);
+  emit pCefViewPrivate_->q_ptr->statusMessage(msg);
 }
 
 void
@@ -185,8 +132,8 @@ CCefClientDelegate::consoleMessage(CefRefPtr<CefBrowser>& browser, const std::st
     return;
 
   auto msg = QString::fromStdString(message);
-  auto src = QString::fromStdString(source);
-  pCefViewPrivate_->q_ptr->consoleMessage(msg, level, src, line);
+
+  emit pCefViewPrivate_->q_ptr->consoleMessage(msg, level);
 }
 
 void
@@ -195,7 +142,7 @@ CCefClientDelegate::loadingProgressChanged(CefRefPtr<CefBrowser>& browser, doubl
   if (!IsValidBrowser(browser))
     return;
 
-  pCefViewPrivate_->q_ptr->loadingProgressChanged(progress);
+  emit pCefViewPrivate_->q_ptr->loadingProgressChanged(progress);
 }
 
 bool
@@ -207,8 +154,8 @@ CCefClientDelegate::cursorChanged(CefRefPtr<CefBrowser> browser,
   if (!IsValidBrowser(browser))
     return false;
 
-  // #if defined(CEF_USE_OSR)
   if (pCefViewPrivate_->isOSRModeEnabled()) {
+    // OSR mode
     QCursor cur;
     if (type != CT_CUSTOM) {
       cur.setShape(mapCursorShape(type));
@@ -218,8 +165,7 @@ CCefClientDelegate::cursorChanged(CefRefPtr<CefBrowser> browser,
     QMetaObject::invokeMethod(pCefViewPrivate_, "onCefUpdateCursor", Q_ARG(const QCursor&, cur));
 
     return true;
-  } else { // #else
+  } else {
     return false;
   }
-  // #endif
 }

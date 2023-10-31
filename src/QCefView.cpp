@@ -15,19 +15,19 @@
 #include "details/QCefViewPrivate.h"
 #include "details/utils/CommonUtils.h"
 
-QCefView::QCefView(const QString url,
+QCefView::QCefView(const QString& url,
                    const QCefSetting* setting,
                    QWidget* parent /*= 0*/,
                    Qt::WindowFlags f /*= Qt::WindowFlags()*/)
   : QWidget(parent, f)
   , d_ptr(new QCefViewPrivate(QCefContext::instance()->d_func(), this, url, setting))
 {
-  // #if defined(CEF_USE_OSR)
+
   if (d_ptr->isOSRModeEnabled()) {
+    // OSR mode
     setBackgroundRole(QPalette::Window);
     setAttribute(Qt::WA_OpaquePaintEvent);
   }
-  // #endif
 
   setMouseTracking(true);
   setFocusPolicy(Qt::WheelFocus);
@@ -46,9 +46,6 @@ QCefView::~QCefView()
   qDebug() << this << "is being destructed";
 
   if (d_ptr) {
-    // close all popup browsers
-    d_ptr->closeAllPopupBrowsers();
-
     // destroy under layer cef browser
     d_ptr->destroyCefBrowser();
     d_ptr.reset();
@@ -80,14 +77,6 @@ QCefView::browserId()
   Q_D(QCefView);
 
   return d->browserId();
-}
-
-bool
-QCefView::isPopup()
-{
-  Q_D(QCefView);
-
-  return d->isPopup();
 }
 
 void
@@ -203,7 +192,7 @@ QCefView::executeJavascript(qint64 frameId, const QString& code, const QString& 
 }
 
 bool
-QCefView::executeJavascriptWithResult(qint64 frameId, const QString& code, const QString& url, qint64 context)
+QCefView::executeJavascriptWithResult(qint64 frameId, const QString& code, const QString& url, const QString& context)
 {
   Q_D(QCefView);
 
@@ -322,13 +311,39 @@ QCefView::setFocus(Qt::FocusReason reason)
   d->setCefWindowFocus(true);
 }
 
+QCefView*
+QCefView::onNewBrowser(qint64 sourceFrameId,
+                       const QString& url,
+                       const QString& name,
+                       CefWindowOpenDisposition targetDisposition,
+                       QRect& rect,
+                       QCefSetting& settings)
+{
+  QCefView* popup = new QCefView(url, &settings, nullptr, Qt::WindowFlags());
+  if (!popup) {
+    // failed to create QCefView, cancel popup
+    return nullptr;
+  }
+
+  // config the popup QCefView
+  if (!name.isEmpty()) {
+    popup->setWindowTitle(name);
+  }
+  popup->setAttribute(Qt::WA_DeleteOnClose, true);
+  popup->resize(rect.size());
+  popup->show();
+
+  return popup;
+}
+
 bool
-QCefView::onBeforePopup(qint64 frameId,
-                        const QString& targetUrl,
-                        const QString& targetFrameName,
-                        QCefView::CefWindowOpenDisposition targetDisposition,
-                        QRect& rect,
-                        QCefSetting& settings)
+QCefView::onNewPopup(qint64 frameId,
+                     const QString& targetUrl,
+                     QString& targetFrameName,
+                     QCefView::CefWindowOpenDisposition targetDisposition,
+                     QRect& rect,
+                     QCefSetting& settings,
+                     bool& disableJavascriptAccess)
 {
   return false;
 }
@@ -343,18 +358,26 @@ QCefView::onUpdateDownloadItem(const QSharedPointer<QCefDownloadItem>& item)
 {
 }
 
+bool
+QCefView::onRequestCloseFromWeb()
+{
+  // delete self
+  deleteLater();
+
+  return true;
+}
+
 QVariant
 QCefView::inputMethodQuery(Qt::InputMethodQuery query) const
 {
   Q_D(const QCefView);
 
-  // #if defined(CEF_USE_OSR)
   if (d->isOSRModeEnabled()) {
+    // OSR mode
     auto r = d->onViewInputMethodQuery(query);
     if (r.isValid())
       return r;
   }
-  // #endif
 
   return QWidget::inputMethodQuery(query);
 }
@@ -372,8 +395,8 @@ QCefView::paintEvent(QPaintEvent* event)
   // for NCW mode, this makes sure QCefView will not be treated as transparent background
   painter.fillRect(rect(), palette().color(backgroundRole()));
 
-  // #if defined(CEF_USE_OSR)
   if (d->isOSRModeEnabled()) {
+    // OSR mode
     // 3. paint widget with its stylesheet
     QStyleOption opt;
     opt.initFrom(this);
@@ -403,7 +426,6 @@ QCefView::paintEvent(QPaintEvent* event)
       }
     }
   }
-  // #endif
 
   // 5. call base paintEvent (empty implementation)
   QWidget::paintEvent(event);
@@ -511,11 +533,10 @@ QCefView::contextMenuEvent(QContextMenuEvent* event)
 
   Q_D(const QCefView);
 
-  // #if defined(CEF_USE_OSR)
   if (d->isOSRModeEnabled()) {
+    // OSR mode
     if (d->osr.isShowingContextMenu_) {
       d->osr.contextMenu_->popup(mapToGlobal(event->pos()));
     }
   }
-  // #endif
 }

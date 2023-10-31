@@ -1,6 +1,6 @@
 ﻿#include "CCefClientDelegate.h"
 
-#include <QImage>
+#include <QDebug>
 #include <QScreen>
 
 #include "QCefSettingPrivate.h"
@@ -14,7 +14,7 @@ CCefClientDelegate::CCefClientDelegate(QCefViewPrivate* p)
 
 CCefClientDelegate::~CCefClientDelegate()
 {
-  return;
+  qDebug() << "CCefClientDelegate is being destructed";
 }
 
 void
@@ -39,7 +39,7 @@ CCefClientDelegate::processQueryRequest(CefRefPtr<CefBrowser>& browser,
 
   auto browserId = browser->GetIdentifier();
   auto req = QString::fromStdString(request);
-  pCefViewPrivate_->q_ptr->cefQueryRequest(browserId, frameId, QCefQuery(req, query_id));
+  emit pCefViewPrivate_->q_ptr->cefQueryRequest(browserId, frameId, QCefQuery(req, query_id));
 }
 
 void
@@ -72,13 +72,13 @@ CCefClientDelegate::invokeMethodNotify(CefRefPtr<CefBrowser>& browser,
   }
 
   auto browserId = browser->GetIdentifier();
-  pCefViewPrivate_->q_ptr->invokeMethod(browserId, frameId, m, args);
+  emit pCefViewPrivate_->q_ptr->invokeMethod(browserId, frameId, m, args);
 }
 
 void
 CCefClientDelegate::reportJSResult(CefRefPtr<CefBrowser>& browser,
                                    int64_t frameId,
-                                   int64_t contextId,
+                                   const std::string& context,
                                    const CefRefPtr<CefValue>& result)
 {
   if (!IsValidBrowser(browser))
@@ -87,5 +87,6 @@ CCefClientDelegate::reportJSResult(CefRefPtr<CefBrowser>& browser,
   auto browserId = browser->GetIdentifier();
   QVariant qV;
   ValueConvertor::CefValueToQVariant(&qV, result.get());
-  pCefViewPrivate_->q_ptr->reportJavascriptResult(browserId, frameId, contextId, qV);
+  auto c = QString::fromStdString(context);
+  emit pCefViewPrivate_->q_ptr->reportJavascriptResult(browserId, frameId, c, qV);
 }

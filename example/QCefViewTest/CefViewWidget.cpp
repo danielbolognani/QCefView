@@ -1,4 +1,4 @@
-﻿#include "CefViewWidget.h"
+#include "CefViewWidget.h"
 
 #if defined(Q_OS_WIN)
 #include <windows.h>
@@ -19,6 +19,8 @@
 CefViewWidget::CefViewWidget(const QString url, const QCefSetting* setting, QWidget* parent /* = 0*/)
   : QCefView(url, setting, parent)
 {
+  setStyleSheet("background: blue;");
+  
   connect(this, &CefViewWidget::draggableRegionChanged, this, &CefViewWidget::onDraggableRegionChanged);
   connect(this, &CefViewWidget::nativeBrowserCreated, this, &CefViewWidget::onNativeBrowserWindowCreated);
 }
@@ -54,12 +56,13 @@ CefViewWidget::onDraggableRegionChanged(const QRegion& draggableRegion, const QR
 }
 
 bool
-CefViewWidget::onBeforePopup(qint64 frameId,
-                             const QString& targetUrl,
-                             const QString& targetFrameName,
-                             QCefView::CefWindowOpenDisposition targetDisposition,
-                             QRect& rect,
-                             QCefSetting& settings)
+CefViewWidget::onNewPopup(qint64 sourceFrameId,
+                          const QString& targetUrl,
+                          QString& targetFrameName,
+                          QCefView::CefWindowOpenDisposition targetDisposition,
+                          QRect& rect,
+                          QCefSetting& settings,
+                          bool& disableJavascriptAccess)
 {
   // create new QCefView as popup browser
   settings.setBackgroundColor(Qt::red);

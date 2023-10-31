@@ -1,6 +1,6 @@
 ﻿#include "CCefAppDelegate.h"
 
-#include <CefViewCoreProtocol.h>
+#include <QDebug>
 
 #include "QCefContextPrivate.h"
 
@@ -8,6 +8,11 @@ CCefAppDelegate::CCefAppDelegate(QCefContextPrivate* context, CommandLineArgs ar
   : pContext_(context)
   , commandLineArgs_(args)
 {
+}
+
+CCefAppDelegate::~CCefAppDelegate()
+{
+  qDebug() << "CCefAppDelegate is being destructed";
 }
 
 void

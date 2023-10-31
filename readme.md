@@ -27,16 +27,16 @@ You can find the latest documentation here:
 
 It can help you quickly understand how to use it.
 
-## Note For Debugging With xCode
+## Note For Debugging With Xcode
 
-if you want to debug the project with xCode, you need to take some action to make sure the demo project could load QCefView at correct location.
+if you want to debug the project with Xcode, you need to take some action to make sure the demo project could load QCefView at correct location.
 
 1. Generate project with cmake
 2. Build demo project with xcode, do not run (actually you will encounter errors if you run directly)
 3. Go to the **Build Phases** for target QCefViewDemo and perform the actions below
     - remove all items under **Target Dependencies**
     - remove all items under **Link Binary With Libraries**
-4. Now you can debug demo project in xCode without errors
+4. Now you can debug demo project in Xcode without errors
 
 if you re-generated the project, please remember to re-do the instructions above
 
@@ -50,7 +50,7 @@ QCefView supports CEF offscreen rendering mode and this feature is enabled by de
  config.setWindowlessRenderingEnabled(false)
  ```
 
-QCefView currently uses Qt Software Rasterizer as the backend paint engine for best compatibility, thus the rendering performance is not so good to be applied for all business scenarios. If you are going to host WegGL games, video sites or some other Web Apps with high rendering performance, Non OSR mode (Native Child Window mode) is recommended.
+QCefView currently uses Qt Software Rasterizer as the backend paint engine for best compatibility, thus the rendering performance is not so good to be applied for all business scenarios. If you want to host WebGL games, video sites or some other Web Apps with high rendering performance, Non OSR mode (Native Child Window mode) is recommended.
 
 ## Question
 ### Why not OpenGL/DirectX/Metal?

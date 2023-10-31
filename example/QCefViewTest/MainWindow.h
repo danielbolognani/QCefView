@@ -32,7 +32,7 @@ protected slots:
 
   void onQCefQueryRequest(int browserId, int64_t frameId, const QCefQuery& query);
 
-  void onJavascriptResult(int browserId, int64_t frameId, int64_t context, const QVariant& result);
+  void onJavascriptResult(int browserId, int64_t frameId, const QString& context, const QVariant& result);
 
   void onLoadingStateChanged(int browserId, bool isLoading, bool canGoBack, bool canGoForward);
 
@@ -66,9 +66,6 @@ protected slots:
   void onBtnCallJSCodeClicked();
 
   void onBtnNewBrowserClicked();
-
-private:
-  void closeEvent(QCloseEvent* event) override;
 
 private:
   Ui::MainWindow m_ui;

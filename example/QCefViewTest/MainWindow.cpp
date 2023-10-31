@@ -102,10 +102,8 @@ MainWindow::createRightCefView()
   // create the QCefView widget and add it to the layout container
   // m_pRightCefViewWidget = new CefViewWidget("https://cefview.github.io/QCefView/", &setting, this);
 
-  isbrwLoaded = false;
-  // this site is for test web events
-  m_pRightCefViewWidget = new CefViewWidget("", &setting, this);
-  m_pRightCefViewWidget->navigateToUrl("https://fastest.fish/test-files");
+  //
+  m_pRightCefViewWidget = new CefViewWidget("https://fastest.fish/test-files", &setting, this);
 
   //
   // m_pRightCefViewWidget = new CefViewWidget("https://mdn.dev/", &setting, this);
@@ -206,13 +204,13 @@ MainWindow::onQCefQueryRequest(int browserId, int64_t frameId, const QCefQuery& 
 }
 
 void
-MainWindow::onJavascriptResult(int browserId, int64_t frameId, int64_t context, const QVariant& result)
+MainWindow::onJavascriptResult(int browserId, int64_t frameId, const QString& context, const QVariant& result)
 {
   auto jsonValue = QJsonDocument::fromVariant(result);
   auto jsonString = QString(jsonValue.toJson());
 
   QString title("Javascript result notification");
-  QString text = QString("Context id: %1\r\nResult in JSON format:\r\n%2").arg(context).arg(jsonString);
+  QString text = QString("Context: %1\r\nResult in JSON format:\r\n%2").arg(context).arg(jsonString);
 
   QMessageBox::information(this->window(), title, text);
 }
@@ -323,7 +321,7 @@ MainWindow::onBtnChangeColorClicked()
 void
 MainWindow::onBtnCallJSCodeClicked()
 {
-  int64_t context = 1000;
+  QString context = "helloQCefView";
   QString code = "alert('hello QCefView'); return {k1: 'str', k2: true, k3: 100};";
   m_pLeftCefViewWidget->executeJavascriptWithResult(QCefView::MainFrameID, code, "", context);
 }
@@ -348,22 +346,6 @@ MainWindow::onBtnNewBrowserClicked()
   w->setCentralWidget(view);
   w->resize(1024, 768);
   w->show();
-}
-
-void
-MainWindow::closeEvent(QCloseEvent* event)
-{
-  if (m_pLeftCefViewWidget) {
-    m_pLeftCefViewWidget->deleteLater();
-    m_pLeftCefViewWidget = nullptr;
-  }
-
-  if (m_pRightCefViewWidget) {
-    m_pRightCefViewWidget->deleteLater();
-    m_pRightCefViewWidget = nullptr;
-  }
-
-  event->accept();
 }
 
 #ifndef Q_OS_MACOS
