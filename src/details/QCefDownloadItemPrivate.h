@@ -44,6 +44,8 @@ public:
   static QSharedPointer<QCefDownloadItem> createQCefDownloadItem(CCefClientDelegate::RefPtr handerl,
                                                                  CefDownloadItem& cefItem,
                                                                  CefRefPtr<CefBeforeDownloadCallback>& callback);
+                                                                 
+  static void setSuggestedName(QCefDownloadItem* item, const QString& suggestedFileName);
 
   static void updateDownloadItem(QCefDownloadItem* p,
                                  CefDownloadItem& cefItem,

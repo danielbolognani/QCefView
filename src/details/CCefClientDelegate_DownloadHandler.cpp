@@ -35,6 +35,10 @@ CCefClientDelegate::onBeforeDownload(CefRefPtr<CefBrowser> browser,
                                                               *(download_item.get()), //
                                                               callback);
 
+  // set suggested file name
+  auto suggestedFileName = QString::fromStdString(suggested_name);
+  QCefDownloadItemPrivate::setSuggestedName(item.data(), suggestedFileName);
+
   pCefViewPrivate_->q_ptr->newDownloadItem(item);
 }
 
