@@ -1,4 +1,4 @@
-#if defined(CEF_USE_OSR)
+﻿#if defined(CEF_USE_OSR)
 #include "KeyboardUtils.h"
 
 #if defined(Q_OS_MACOS)
@@ -418,6 +418,28 @@ winGetKeyboardModifiers(QKeyEvent* qe)
       break;
   }
 
+  //Codigo antigo deixado aqui para referencia....
+   //if (!qe->text().isEmpty() && (::GetKeyState(VK_RMENU) & 0x8000)) {
+   // // reverse AltGr detection taken from PlatformKeyMap::UsesAltGraph
+   // // instead of checking all combination for ctrl-alt, just check current char
+   // HKL current_layout = ::GetKeyboardLayout(0);
+
+   // // https://docs.microsoft.com/en-gb/windows/win32/api/winuser/nf-winuser-vkkeyscanexw
+   // // ... high-order byte contains the shift state,
+   // // which can be a combination of the following flag bits.
+   // // 2 Either CTRL key is pressed.
+   // // 4 Either ALT key is pressed.
+   // SHORT scan_res = ::VkKeyScanExW(vk, current_layout);
+   // if (((scan_res >> 8) & 0xFF) == (2 | 4))
+   // {
+   //   // ctrl-alt pressed
+   //   cm &= ~(EVENTFLAG_CONTROL_DOWN | EVENTFLAG_ALT_DOWN);
+   //   cm |= EVENTFLAG_ALTGR_DOWN;
+   // }
+   //}
+
+   //return cm;
+
   // mimic alt-gr check behavior
   if (!qe->text().isEmpty() && (::GetKeyState(VK_RMENU) & 0x8000)) {
     if ((m & (Qt::ControlModifier | Qt::AltModifier)) == (Qt::ControlModifier | Qt::AltModifier)) {
@@ -449,8 +471,9 @@ winGetKeyboardModifiers(QKeyEvent* qe)
     //   cm |= EVENTFLAG_ALTGR_DOWN;
     // }
 
-    return cm;
   }
+
+  return cm;
 }
 
 static void
