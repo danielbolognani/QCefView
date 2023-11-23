@@ -42,6 +42,14 @@ QCefDownloadItemPrivate::createQCefDownloadItem(CCefClientDelegate::RefPtr handl
 }
 
 void
+QCefDownloadItemPrivate::setSuggestedName(QCefDownloadItem* item, const QString& suggestedFileName)
+{
+  auto p = item->d_ptr.data();
+  p->suggestedFileName = suggestedFileName;
+}
+
+
+void
 QCefDownloadItemPrivate::updateDownloadItem(QCefDownloadItem* p,
                                             CefDownloadItem& cefItem,
                                             CefRefPtr<CefDownloadItemCallback>& callback)
