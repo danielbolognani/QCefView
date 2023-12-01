@@ -133,7 +133,7 @@ CCefClientDelegate::consoleMessage(CefRefPtr<CefBrowser>& browser, const std::st
 
   auto msg = QString::fromStdString(message);
 
-  emit pCefViewPrivate_->q_ptr->consoleMessage(msg, level);
+  emit pCefViewPrivate_->q_ptr->consoleMessage(msg, level, QString(source.c_str()), line);
 }
 
 void

@@ -449,19 +449,6 @@ signals:
   /// <param name="window">The native browser windows</param>
   void nativeBrowserCreated(QWindow* window);
 
-<<<<<<< HEAD
-  /// <summary>
-  /// Gets called right after the popup browser was created.
-  /// </summary>
-  /// <param name="popup">The new created popup QCefView instance</param>
-  /// <remarks>
-  /// The lifecycle of the popup browser is managed by the owner of the popup browser,
-  /// thus do not try to hold the popup browser instance.
-  /// If you need to implement browser tab, you should override the <see cref="onBeforePopup"/> method
-  /// and create your own QCefView browser instance then you can manipulate the created one as whatever
-  /// you want.
-  /// </remarks>
-  void popupCreated(QCefView* popup);
 
   /// <summary>
   /// Gets called on find result.
@@ -474,9 +461,6 @@ signals:
   void findResult(int identifier, int count, const QRect& selectionRect, int activeMatchOrdinal, bool finalUpdate);
 
 public slots:
-=======
->>>>>>> upstream/main
-protected:
   /// <summary>
   /// Gets called before a new browser created (only for browser created by non-JavaScript)
   /// </summary>
