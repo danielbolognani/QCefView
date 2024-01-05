@@ -90,6 +90,19 @@ public:
   /// </summary>
   ~QCefView();
 
+    /// <summary>
+  /// Please refer to QWidget::inputMethodQuery
+  /// </summary>
+  QVariant inputMethodQuery(Qt::InputMethodQuery query) const override;
+
+  void onDragEnter(QDragEnterEvent* event);
+
+  void onDragLeave(QDragLeaveEvent* event);
+
+  void onDragMove(QDragMoveEvent* event);
+
+  void onDrop(QDropEvent* event);
+
   /// <summary>
   /// Adds a url mapping item with local web resource directory
   /// </summary>
@@ -499,19 +512,6 @@ public:
   /// Please refer to QWidget::setFocus
   /// </summary>
   void setFocus(Qt::FocusReason reason);
-
-  /// <summary>
-  /// Please refer to QWidget::inputMethodQuery
-  /// </summary>
-  QVariant inputMethodQuery(Qt::InputMethodQuery query) const override;
-
-  void onDragEnter(QDragEnterEvent* event);
-
-  void onDragLeave(QDragLeaveEvent* event);
-
-  void onDragMove(QDragMoveEvent* event);
-
-  void onDrop(QDropEvent* event);
 
 protected:
   /// <summary>
