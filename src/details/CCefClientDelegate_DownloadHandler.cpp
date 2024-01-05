@@ -28,8 +28,8 @@ CCefClientDelegate::onBeforeDownload(CefRefPtr<CefBrowser> browser,
 {
   FLog();
 
-  if (!IsValidBrowser(browser))
-    return;
+//   if (!IsValidBrowser(browser))
+//     return;
 
   auto item = QCefDownloadItemPrivate::createQCefDownloadItem(shared_from_this(),
                                                               *(download_item.get()), //
@@ -49,8 +49,8 @@ CCefClientDelegate::onDownloadUpdated(CefRefPtr<CefBrowser> browser,
 {
   FLog();
 
-  if (!IsValidBrowser(browser))
-    return;
+//   if (!IsValidBrowser(browser))
+//     return;
 
   if (!download_item->IsValid())
     return;
