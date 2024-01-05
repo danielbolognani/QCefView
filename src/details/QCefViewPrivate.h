@@ -34,15 +34,26 @@ private:
   int clientSelectedCertificate;
 
 public:
+
+  CefRenderHandler::DragOperation currentDragOperation = CefRenderHandler::DragOperation::DRAG_OPERATION_NONE;
+
+  CefRefPtr<CefDragData> _drag_data;
   /// <summary>
   ///
   /// </summary>
   static void destroyAllInstance();
 
+  static CefRenderHandler::DragOperationsMask getDragOperationMask(Qt::DropAction da);
+
   /// <summary>
   ///
   /// </summary>
   bool disablePopuContextMenu_ = false;
+
+  /// <summary>
+  ///
+  /// </summary>
+  bool enableDragAndDrop_ = false;
 
   /// <summary>
   ///
@@ -172,6 +183,12 @@ public:
   void printToPdf(const QString& path);
 
   void getURL(QString& url);
+
+  Qt::DropAction getQtDropAction();
+
+  void setDragData(CefRefPtr<CefDragData> drag_data);
+
+  CefRefPtr<CefDragData> getDragData();
 
 protected:
   void onCefMainBrowserCreated(CefRefPtr<CefBrowser>& browser, QWindow* window);

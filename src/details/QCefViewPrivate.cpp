@@ -93,11 +93,55 @@ QCefViewPrivate::~QCefViewPrivate()
   sLiveInstances.remove(this);
 }
 
+CefRenderHandler::DragOperationsMask
+QCefViewPrivate::getDragOperationMask(Qt::DropAction da)
+{
+  switch (da) {
+    case Qt::DropAction::IgnoreAction:
+      return CefRenderHandler::DragOperationsMask::DRAG_OPERATION_NONE;
+    case Qt::DropAction::CopyAction:
+      return CefRenderHandler::DragOperationsMask::DRAG_OPERATION_COPY;
+    case Qt::DropAction::MoveAction:
+      return CefRenderHandler::DragOperationsMask::DRAG_OPERATION_MOVE;
+    case Qt::DropAction::LinkAction:
+      return CefRenderHandler::DragOperationsMask::DRAG_OPERATION_LINK;
+  }
+  return CefRenderHandler::DragOperationsMask::DRAG_OPERATION_EVERY;
+}
+
+Qt::DropAction QCefViewPrivate::getQtDropAction()
+{
+  switch (currentDragOperation) {
+    case CefRenderHandler::DragOperation::DRAG_OPERATION_MOVE:
+      return Qt::DropAction::MoveAction;
+    case CefRenderHandler::DragOperation::DRAG_OPERATION_COPY:
+      return Qt::DropAction::CopyAction;
+    case CefRenderHandler::DragOperation::DRAG_OPERATION_LINK:
+      return Qt::DropAction::LinkAction;
+    case CefRenderHandler::DragOperation::DRAG_OPERATION_GENERIC:
+      return Qt::DropAction::MoveAction;
+    default:
+      return Qt::DropAction::IgnoreAction;
+  }
+  
+}
+
+void
+QCefViewPrivate::setDragData(CefRefPtr<CefDragData> drag_data)
+{
+  this->_drag_data = drag_data;
+}
+
+CefRefPtr<CefDragData> QCefViewPrivate::getDragData()
+{
+  return this->_drag_data;
+}
+
 void
 QCefViewPrivate::createCefBrowser(QCefView* view, const QString url, const QCefSetting* setting)
 {
   // create browser client handler delegate
-  auto pClientDelegate = std::make_shared<CCefClientDelegate>(this);
+ auto pClientDelegate = std::make_shared<CCefClientDelegate>(this);
 
   // create browser client handler
   auto pClient = new CefViewBrowserClient(pContextPrivate_->getCefApp(), pClientDelegate);
@@ -142,7 +186,7 @@ QCefViewPrivate::createCefBrowser(QCefView* view, const QString url, const QCefS
     osr.transparentPaintingEnabled = true;
 #endif
 
-  // create browser object
+    // create browser object
   bool success = CefBrowserHost::CreateBrowser(window_info,       // window info
                                                pClient,           // handler
                                                url.toStdString(), // url
@@ -165,7 +209,7 @@ QCefViewPrivate::createCefBrowser(QCefView* view, const QString url, const QCefS
     return;
   }
 
-  // install global event filter
+   // install global event filter
   qApp->installEventFilter(this);
 
   pClient_ = pClient;
@@ -827,7 +871,7 @@ QCefViewPrivate::onViewMouseEvent(QMouseEvent* event)
   CefBrowserHost::MouseButtonType mbt = MBT_LEFT;
   switch (event->button()) {
     case Qt::LeftButton: {
-      mbt = MBT_LEFT;
+      mbt = MBT_LEFT;      
     } break;
     case Qt::RightButton: {
       mbt = MBT_RIGHT;

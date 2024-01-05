@@ -21,6 +21,7 @@
 #include <QVariantList>
 #include <QWidget>
 #include <QWindow>
+#include <QMimeData>
 #pragma endregion qt_headers
 
 class QCefViewPrivate;
@@ -271,6 +272,22 @@ public:
   /// <param name="item">Current url</param>
   void getCurrentURL(QString& url);
 
+  /// <summary>
+  /// Sets whether to enable drag and drop
+  /// </summary>
+  /// <param name="enable">True to enable; otherwise false</param>
+  /// <remarks>
+  /// This function does not work for OSR mode. There is a problem, when dragging a file to a non dragging area,
+  /// the content of the file will be displayed. You need to solve the problem yourself.
+  /// </remarks>
+  void setEnableDragAndDrop(bool enable);
+
+  /// <summary>
+  /// Gets whether to enable drag and drop
+  /// </summary>
+  /// <returns>True to enable; otherwise false</returns>
+  bool isDragAndDropEnabled() const;
+
 signals:
   /// <summary>
   /// Gets called on loading state changed
@@ -487,6 +504,14 @@ public:
   /// Please refer to QWidget::inputMethodQuery
   /// </summary>
   QVariant inputMethodQuery(Qt::InputMethodQuery query) const override;
+
+  void onDragEnter(QDragEnterEvent* event);
+
+  void onDragLeave(QDragLeaveEvent* event);
+
+  void onDragMove(QDragMoveEvent* event);
+
+  void onDrop(QDropEvent* event);
 
 protected:
   /// <summary>

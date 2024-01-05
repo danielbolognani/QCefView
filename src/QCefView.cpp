@@ -209,6 +209,22 @@ QCefView::isPopupContextMenuDisabled()
 }
 
 void
+QCefView::setEnableDragAndDrop(bool enable)
+{
+  Q_D(QCefView);
+
+  d->enableDragAndDrop_ = enable;
+}
+
+bool
+QCefView::isDragAndDropEnabled() const
+{
+  Q_D(const QCefView);
+
+  return d->enableDragAndDrop_;
+}
+
+void
 QCefView::findText(const QString& subString, QCefView::CefFindFlags options)
 {
   Q_D(QCefView);
@@ -287,6 +303,71 @@ QCefView::inputMethodQuery(Qt::InputMethodQuery query) const
 #endif
 
   return QWidget::inputMethodQuery(query);
+}
+
+void
+QCefView::onDragEnter(QDragEnterEvent* event)
+{
+  //Implemented by Totvs
+  Q_D(QCefView);
+  QPoint point = event->position().toPoint();
+
+  CefMouseEvent cefMouseEvent;
+  cefMouseEvent.x = point.x();
+  cefMouseEvent.y = point.y();
+
+  CefRenderHandler::DragOperationsMask operationMask = QCefViewPrivate::getDragOperationMask(event->dropAction());
+
+  d->pCefBrowser_->GetHost()->DragTargetDragEnter(d->getDragData(), cefMouseEvent, operationMask);
+  d->pCefBrowser_->GetHost()->DragTargetDragOver(cefMouseEvent, operationMask);
+}
+
+void
+QCefView::onDragLeave(QDragLeaveEvent* event)
+{
+  // Implemented by Totvs
+  Q_D(QCefView);
+  d->pCefBrowser_->GetHost()->DragTargetDragLeave();
+}
+
+void
+QCefView::onDragMove(QDragMoveEvent* event)
+{
+  // Implemented by Totvs
+  Q_D(QCefView);
+
+  CefMouseEvent cefMouseEvent;
+  QPoint pt = event->position().toPoint();
+  cefMouseEvent.x = pt.x();
+  cefMouseEvent.y = pt.y();
+
+  CefRenderHandler::DragOperationsMask operationMask = QCefViewPrivate::getDragOperationMask(event->dropAction());
+  d->pCefBrowser_->GetHost()->DragTargetDragOver(cefMouseEvent, operationMask);
+
+  Qt::DropAction dropAction = d_ptr->getQtDropAction();
+
+  //qDebug() << "DropAction: " << dropAction;
+
+  event->setDropAction(dropAction);
+  event->accept();
+
+  d_ptr->currentDragOperation = CefRenderHandler::DragOperation::DRAG_OPERATION_NONE;
+  
+}
+
+void 
+QCefView::onDrop(QDropEvent* event)
+{
+  // Implemented by Totvs
+  Q_D(QCefView);
+  CefMouseEvent mevent;
+  QPoint pt = event->position().toPoint();
+  mevent.x = pt.x();
+  mevent.y = pt.y();
+  CefRenderHandler::DragOperationsMask operationMask = QCefViewPrivate::getDragOperationMask(event->dropAction());
+  d->pCefBrowser_->GetHost()->DragTargetDragOver(mevent, operationMask);
+  d->pCefBrowser_->GetHost()->DragTargetDrop(mevent);
+
 }
 
 void

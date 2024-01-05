@@ -200,4 +200,9 @@ public:
   virtual void onVirtualKeyboardRequested(CefRefPtr<CefBrowser> browser,
                                           CefRenderHandler::TextInputMode input_mode) override;
 #endif
+
+  //DragHandler
+  virtual bool onDragEnter(CefRefPtr<CefBrowser> browser,
+                             CefRefPtr<CefDragData> dragData,
+                             CefDragHandler::DragOperationsMask mask) override;
 };
