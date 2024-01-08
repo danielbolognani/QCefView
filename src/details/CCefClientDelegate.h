@@ -204,5 +204,5 @@ public:
   //DragHandler
   virtual bool onDragEnter(CefRefPtr<CefBrowser> browser,
                              CefRefPtr<CefDragData> dragData,
-                             CefDragHandler::DragOperationsMask mask) override;
+                             CefDragHandler::DragOperationsMask mask);
 };
