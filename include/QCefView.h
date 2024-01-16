@@ -22,6 +22,7 @@
 #include <QWidget>
 #include <QWindow>
 #include <QMimeData>
+#include <QHash>
 #pragma endregion qt_headers
 
 class QCefViewPrivate;
@@ -301,6 +302,12 @@ public:
   /// <returns>True to enable; otherwise false</returns>
   bool isDragAndDropEnabled() const;
 
+ /// <summary>
+  /// Synchronize |configs| with client state. If |get_defaults| is true then populate |configs| with the default print settings.
+  /// <param name="configs">Printer settings</param>
+  /// <param name="get_defaults">If true then populate |configs| with the default print settings</param>
+  virtual void printSettings(QHash<QString, QString>& /*configs*/, bool /*get_defaults*/) {};
+
 signals:
   /// <summary>
   /// Gets called on loading state changed
@@ -344,6 +351,30 @@ signals:
                  int errorCode,
                  const QString& errorMsg,
                  const QString& failedUrl);
+
+  /// <summary>
+  /// Called when printing has started.
+  /// </summary>
+  void printStart();
+
+  /// <summary>
+  /// Show the print dialog. Return true if the dialog will be displayed or false to cancel the printing immediately.
+  /// </summary>
+  /// <param name="has_selection">Unknown</param>
+  bool printDialog(bool has_selection);
+
+  /// <summary>
+  /// Send the print job to the printer. Return true if the job will proceed or false to cancel the job immediately.
+  /// </summary>
+  /// <param name="document_name">Name of the document being printed</param>
+  /// <param name="pdf_file_path">Path where the PDF file to be printed is temporarily stored</param>
+  bool printJob(QString document_name,
+                QString pdf_file_path);
+
+  /// <summary>
+  /// Reset client state related to printing.
+  /// </summary>
+  void printReset();
 
   /// <summary>
   /// Gets called on trying to load certificates
