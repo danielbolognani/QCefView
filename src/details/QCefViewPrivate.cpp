@@ -290,6 +290,7 @@ QCefViewPrivate::printToPdf(const QString& path)
   if(pCefBrowser_) {
     CefPdfPrintSettings settings;
     settings.margin_type = PDF_PRINT_MARGIN_NONE;
+    settings.print_background = true;
     pCefBrowser_->GetHost()->PrintToPDF(path.toStdString(), settings, nullptr);
   }
 }
