@@ -4,6 +4,7 @@
 #include "details/utils/CommonUtils.h"
 
 REGISTER_METATYPE(QCefSetting);
+REGISTER_METATYPE(QCefPdfPrintSetting);
 
 QCefSetting::QCefSetting()
   : d_ptr(new QCefSettingPrivate)
@@ -400,4 +401,233 @@ QCefSetting::backgroundColor() const
 {
   Q_D(const QCefSetting);
   return d->backgroundColor_;
+}
+
+
+
+
+QCefPdfPrintSetting::QCefPdfPrintSetting() : d_ptr(new QCefPdfPrintSettingPrivate)
+{}
+
+QCefPdfPrintSetting::QCefPdfPrintSetting(const QCefPdfPrintSetting& other) : d_ptr(new QCefPdfPrintSettingPrivate)
+{
+  *d_ptr = *(other.d_ptr);
+}
+
+QCefPdfPrintSetting& QCefPdfPrintSetting::operator=(const QCefPdfPrintSetting& other)
+{
+  *d_ptr = *(other.d_ptr);
+  return *this;
+}
+
+QCefPdfPrintSetting::~QCefPdfPrintSetting() {}
+
+void
+QCefPdfPrintSetting::setDisplayHeaderFooter(const bool value)
+{
+  Q_D(QCefPdfPrintSetting);
+  d->display_header_footer_ = value;
+}
+
+const bool
+QCefPdfPrintSetting::getDisplayHeaderFooter() const
+{
+  Q_D(const QCefPdfPrintSetting);
+  return d->display_header_footer_;
+}
+
+void
+QCefPdfPrintSetting::setFooterTemplate(const std::string value)
+{
+  Q_D(QCefPdfPrintSetting);
+  d->footer_template_ = value;
+}
+
+std::string
+QCefPdfPrintSetting::getFooterTemplate() const
+{
+  Q_D(const QCefPdfPrintSetting);
+  return d->footer_template_;
+}
+
+void
+QCefPdfPrintSetting::setHeaderTemplate(const std::string value)
+{
+  Q_D(QCefPdfPrintSetting);
+  d->header_template_ = value;
+}
+
+std::string
+QCefPdfPrintSetting::getHeaderTemplate() const
+{
+  Q_D(const QCefPdfPrintSetting);
+  return d->header_template_;
+}
+
+void
+QCefPdfPrintSetting::setLandscape(const int value)
+{
+  Q_D(QCefPdfPrintSetting);
+  d->landscape_ = value;
+}
+
+int
+QCefPdfPrintSetting::getLandscape() const
+{
+  Q_D(const QCefPdfPrintSetting);
+  return d->landscape_;
+}
+
+void
+QCefPdfPrintSetting::setMarginBottom(const double value)
+{
+  Q_D(QCefPdfPrintSetting);
+  d->margin_bottom_ = value;
+}
+
+double
+QCefPdfPrintSetting::getMarginBottom() const
+{
+  Q_D(const QCefPdfPrintSetting);
+  return d->margin_bottom_;
+}
+
+void
+QCefPdfPrintSetting::setMarginLeft(const double value)
+{
+  Q_D(QCefPdfPrintSetting);
+  d->margin_left_ = value;
+}
+
+double
+QCefPdfPrintSetting::getMarginLeft() const
+{
+  Q_D(const QCefPdfPrintSetting);
+  return d->margin_left_;
+}
+
+void
+QCefPdfPrintSetting::setMarginRight(const double value)
+{
+  Q_D(QCefPdfPrintSetting);
+  d->margin_right_ = value;
+}
+
+double
+QCefPdfPrintSetting::getMarginRight() const
+{
+  Q_D(const QCefPdfPrintSetting);
+  return d->margin_right_;
+}
+
+void
+QCefPdfPrintSetting::setMarginTop(const double value)
+{
+  Q_D(QCefPdfPrintSetting);
+  d->margin_top_ = value;
+}
+
+double
+QCefPdfPrintSetting::getMarginTop() const
+{
+  Q_D(const QCefPdfPrintSetting);
+  return d->margin_top_;
+}
+
+void
+QCefPdfPrintSetting::setMarginType(const QCefPdfPrintMarginType_t value)
+{
+  Q_D(QCefPdfPrintSetting);
+  d->margin_type_ = value;
+}
+
+QCefPdfPrintMarginType_t
+QCefPdfPrintSetting::getMarginType() const
+{
+  Q_D(const QCefPdfPrintSetting);
+  return d->margin_type_;
+}
+
+void
+QCefPdfPrintSetting::setPageRanges(const std::string value)
+{
+  Q_D(QCefPdfPrintSetting);
+  d->page_ranges_ = value;
+}
+
+std::string
+QCefPdfPrintSetting::getPageRanges() const
+{
+  Q_D(const QCefPdfPrintSetting);
+  return d->page_ranges_;
+}
+
+void
+QCefPdfPrintSetting::setPaperHeight(const double value)
+{
+  Q_D(QCefPdfPrintSetting);
+  d->paper_height_ = value;
+}
+
+double
+QCefPdfPrintSetting::getPaperHeight() const
+{
+  Q_D(const QCefPdfPrintSetting);
+  return d->paper_height_;
+}
+
+void
+QCefPdfPrintSetting::setPaperWidth(const double value)
+{
+  Q_D(QCefPdfPrintSetting);
+  d->paper_width_ = value;
+}
+
+double
+QCefPdfPrintSetting::getPaperWidth() const
+{
+  Q_D(const QCefPdfPrintSetting);
+  return d->paper_width_;
+}
+
+void
+QCefPdfPrintSetting::setPreferCssPageSize(const int value)
+{
+  Q_D(QCefPdfPrintSetting);
+  d->prefer_css_page_size_ = value;
+}
+
+int
+QCefPdfPrintSetting::getPreferCssPageSize() const
+{
+  Q_D(const QCefPdfPrintSetting);
+  return d->prefer_css_page_size_;
+}
+
+void
+QCefPdfPrintSetting::setPrintBackground(const bool value)
+{
+  Q_D(QCefPdfPrintSetting);
+  d->print_background_ = value;
+}
+
+bool
+QCefPdfPrintSetting::isPrintBackground() const
+{
+  Q_D(const QCefPdfPrintSetting);
+  return d->print_background_;
+}
+
+void
+QCefPdfPrintSetting::setScale(const double value)
+{
+  Q_D(QCefPdfPrintSetting);
+  d->scale_ = value;
+}
+
+double
+QCefPdfPrintSetting::getScale() const
+{
+  Q_D(const QCefPdfPrintSetting);
+  return d->scale_;
 }

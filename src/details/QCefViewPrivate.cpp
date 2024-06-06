@@ -177,7 +177,7 @@ QCefViewPrivate::createCefBrowser(QCefView* view, const QString url, const QCefS
 #endif
 #endif
 
-  // create the browser settings
+    // create the browser settings
   CefBrowserSettings browserSettings;
   QCefSettingPrivate::CopyToCefBrowserSettings(setting, &browserSettings);
 
@@ -291,7 +291,20 @@ QCefViewPrivate::printToPdf(const QString& path)
     CefPdfPrintSettings settings;
     settings.margin_type = PDF_PRINT_MARGIN_NONE;
     settings.print_background = true;
+    //A4 Size of 210x297 in inches
+    settings.paper_height = 11.693;
+    settings.paper_width = 8.2676;
     pCefBrowser_->GetHost()->PrintToPDF(path.toStdString(), settings, nullptr);
+  }
+}
+
+void
+QCefViewPrivate::printToPdf(const QString& path, QCefPdfPrintSetting& settings)
+{
+  if (pCefBrowser_) {
+    CefPdfPrintSettings cefPdfPrintSettings;
+    QCefPdfPrintSettingPrivate::CopyToCefPdfPrintSettings(&settings, &cefPdfPrintSettings);
+    pCefBrowser_->GetHost()->PrintToPDF(path.toStdString(), cefPdfPrintSettings, nullptr);
   }
 }
 

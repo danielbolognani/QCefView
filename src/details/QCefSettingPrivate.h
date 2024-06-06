@@ -61,3 +61,38 @@ public:
 
   /* QColor */ QVariant backgroundColor_;
 };
+
+class QCefPdfPrintSettingPrivate
+{
+  Q_DECLARE_PUBLIC(QCefPdfPrintSetting)
+  QCefPdfPrintSetting* q_ptr;
+
+  friend class CCefClientDelegate;
+
+public:
+  static void CopyFromCefPdfPrintSettings(QCefPdfPrintSetting* qs, const CefPdfPrintSettings* cs);
+
+  static void CopyToCefPdfPrintSettings(const QCefPdfPrintSetting* qs, CefPdfPrintSettings* cs);
+
+  explicit QCefPdfPrintSettingPrivate();
+
+  bool display_header_footer_;
+  std::string footer_template_ = "";
+  std::string header_template_ = "";
+  int landscape_ = -1;
+  double margin_bottom_ = -1;
+  double margin_left_ = -1;
+  double margin_right_ = -1;
+  double margin_top_ = -1;
+  QCefPdfPrintMarginType_t margin_type_;
+  std::string page_ranges_;
+  double paper_height_ = 297;
+  double paper_width_ = 210;
+  int prefer_css_page_size_ = -1;
+  int print_background_ = -1;
+  double scale_ = -1;
+
+private:
+  static QCefPdfPrintMarginType_t to_QCef_MarginType(cef_pdf_print_margin_type_t margin_type);
+  static cef_pdf_print_margin_type_t to_Cef_MarginType(QCefPdfPrintMarginType_t margin_type);
+};

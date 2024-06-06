@@ -257,6 +257,14 @@ QCefView::printToPdf(const QString& path)
 }
 
 void
+QCefView::printToPdf(const QString& path, QCefPdfPrintSetting settings)
+{
+  Q_D(QCefView);
+
+  d->printToPdf(path, settings);
+}
+
+void
 QCefView::getCurrentURL(QString& url)
 {
   Q_D(QCefView);

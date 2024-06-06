@@ -21,6 +21,11 @@
 
 #include <QCefView.h>
 
+enum PAPER_SIZE
+{
+    A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10
+};
+
 class QCefViewPrivate : public QObject
 {
   Q_OBJECT
@@ -181,6 +186,8 @@ public:
   void print();
 
   void printToPdf(const QString& path);
+
+  void printToPdf(const QString& path, QCefPdfPrintSetting& settings);
 
   void getURL(QString& url);
 

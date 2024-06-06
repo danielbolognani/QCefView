@@ -184,3 +184,134 @@ QCefSettingPrivate::CopyToCefBrowserSettings(const QCefSetting* qs, CefBrowserSe
   if (qs->d_ptr->backgroundColor_.canConvert<QColor>())
     cs->background_color = qs->d_ptr->backgroundColor_.value<QColor>().rgba();
 }
+
+
+QCefPdfPrintSettingPrivate::QCefPdfPrintSettingPrivate()
+{
+  //auto cefConfig = QCefContext::instance()->cefConfig();
+  //backgroundColor_ = cefConfig->backgroundColor();
+}
+
+
+
+
+void
+QCefPdfPrintSettingPrivate::CopyFromCefPdfPrintSettings(QCefPdfPrintSetting* qs, const CefPdfPrintSettings* cs)
+{
+
+  if (!qs || !cs)
+    return;
+
+  qs->d_ptr->display_header_footer_ = cs->display_header_footer;
+  qs->d_ptr->footer_template_ = CefString(&cs->footer_template).ToString();
+  
+  qs->d_ptr->header_template_ = CefString(&cs->header_template).ToString();
+  qs->d_ptr->landscape_ = cs->landscape;
+  qs->d_ptr->margin_bottom_ = cs->margin_bottom;
+  qs->d_ptr->margin_left_ = cs->margin_left;
+  qs->d_ptr->margin_right_ = cs->margin_right;
+  qs->d_ptr->margin_top_ = cs->margin_top;
+
+  qs->d_ptr->margin_type_ = to_QCef_MarginType(cs->margin_type);
+  qs->d_ptr->page_ranges_ = CefString(&cs->page_ranges).ToString();
+
+  //The paper height and width is used as inches by CEF and as mm by QCefView, so the conversion is made here.
+  qs->d_ptr->paper_height_ = cs->paper_height * 25.4;
+  qs->d_ptr->paper_width_ = cs->paper_width * 25.4;
+
+  qs->d_ptr->prefer_css_page_size_ = cs->prefer_css_page_size;
+  qs->d_ptr->print_background_ = cs->print_background;
+  qs->d_ptr->scale_ = cs->scale;
+}
+
+void 
+QCefPdfPrintSettingPrivate::CopyToCefPdfPrintSettings(const QCefPdfPrintSetting* qs, CefPdfPrintSettings* cs)
+{
+  if (!cs)
+    return;
+
+  if (!qs) {
+    qs = new QCefPdfPrintSetting;
+    qs->d_ptr->margin_type_ = PDF_PRINT_MARGIN_DEFAULT_;
+    qs->d_ptr->print_background_ = 1;
+
+    //A4 size
+    qs->d_ptr->paper_width_ = 210;
+    qs->d_ptr->paper_height_ = 297;
+  }
+
+  cs->display_header_footer = qs->d_ptr->display_header_footer_;
+
+  if (!qs->d_ptr->footer_template_.empty())
+    CefString(&cs->footer_template) = qs->d_ptr->footer_template_;
+
+  if (!qs->d_ptr->header_template_.empty())
+    CefString(&cs->header_template) = qs->d_ptr->header_template_;
+
+  if (qs->d_ptr->landscape_ > -1)
+    cs->landscape = qs->d_ptr->landscape_;
+
+  if (qs->d_ptr->margin_bottom_ > -1)
+    cs->margin_bottom = qs->d_ptr->margin_bottom_;
+
+  if (qs->d_ptr->margin_left_ > -1)
+    cs->margin_left = qs->d_ptr->margin_left_;
+
+  if (qs->d_ptr->margin_right_ > -1)
+    cs->margin_right = qs->d_ptr->margin_right_;
+
+  if (qs->d_ptr->margin_top_ > -1)
+    cs->margin_top = qs->d_ptr->margin_top_;
+
+  cs->margin_type = to_Cef_MarginType(qs->d_ptr->margin_type_);
+
+  if (!qs->d_ptr->page_ranges_.empty())
+    CefString(&cs->page_ranges) = qs->d_ptr->page_ranges_;
+
+  // The paper height and width is used as inches by CEF and as mm by QCefView, so the conversion is made here.
+  if (qs->d_ptr->paper_height_ > -1)
+    cs->paper_height = qs->d_ptr->paper_height_ / 25.4;
+
+  if (qs->d_ptr->paper_width_ > -1)
+    cs->paper_width = qs->d_ptr->paper_width_ / 25.4;
+
+  if (qs->d_ptr->prefer_css_page_size_ > -1)
+    cs->prefer_css_page_size = qs->d_ptr->prefer_css_page_size_;
+
+  if (qs->d_ptr->print_background_ > -1)
+    cs->print_background = qs->d_ptr->print_background_;
+
+  if (qs->d_ptr->scale_ > -1)
+    cs->scale = qs->d_ptr->scale_;
+
+}
+
+QCefPdfPrintMarginType_t
+QCefPdfPrintSettingPrivate::to_QCef_MarginType(cef_pdf_print_margin_type_t margin_type)
+{
+  switch (margin_type) {
+    case PDF_PRINT_MARGIN_DEFAULT:
+      return QCefPdfPrintMarginType_t::PDF_PRINT_MARGIN_DEFAULT_;
+    case PDF_PRINT_MARGIN_NONE:
+      return QCefPdfPrintMarginType_t::PDF_PRINT_MARGIN_NONE_;
+    case PDF_PRINT_MARGIN_CUSTOM:
+      return QCefPdfPrintMarginType_t::PDF_PRINT_MARGIN_CUSTOM_;
+    default:
+      return QCefPdfPrintMarginType_t::PDF_PRINT_MARGIN_DEFAULT_;
+  }
+}
+
+cef_pdf_print_margin_type_t
+QCefPdfPrintSettingPrivate::to_Cef_MarginType(QCefPdfPrintMarginType_t margin_type)
+{
+  switch (margin_type) {
+    case PDF_PRINT_MARGIN_DEFAULT_:
+      return cef_pdf_print_margin_type_t::PDF_PRINT_MARGIN_DEFAULT;
+    case PDF_PRINT_MARGIN_NONE_:
+      return cef_pdf_print_margin_type_t::PDF_PRINT_MARGIN_NONE;
+    case PDF_PRINT_MARGIN_CUSTOM_:
+      return cef_pdf_print_margin_type_t::PDF_PRINT_MARGIN_CUSTOM;
+    default:
+      return cef_pdf_print_margin_type_t::PDF_PRINT_MARGIN_DEFAULT;
+  }
+}

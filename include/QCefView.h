@@ -282,6 +282,13 @@ public:
   void printToPdf(const QString& path);
 
   /// <summary>
+  /// Print PDF of the current page
+  /// </summary>
+  /// <param name="path">Path to the PDF</param>
+  /// <param name="settings">The settings to print the PDF</param>
+  void printToPdf(const QString& path, QCefPdfPrintSetting settings);
+
+  /// <summary>
   /// Return the current loading (or loaded) url
   /// <param name="item">Current url</param>
   void getCurrentURL(QString& url);
