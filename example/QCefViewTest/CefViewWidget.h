@@ -17,18 +17,31 @@ public:
 
   ~CefViewWidget();
 
+  void dragEnterEvent(QDragEnterEvent* event) override;
+
+  void dragLeaveEvent(QDragLeaveEvent* event) override;
+
+  void dragMoveEvent(QDragMoveEvent* event) override;
+
+  void dropEvent(QDropEvent* event) override;
+
 protected slots:
   void onScreenChanged(QScreen* screen);
 
 private:
+
   virtual void onBrowserWindowCreated(QWindow* win);
 
   virtual void resizeEvent(QResizeEvent* event);
 
-private:
+  private:
   QWindow* m_cefWindow = nullptr;
 
   int m_cornerRadius = 50;
+
+  QRegion m_draggableRegion;
+
+  QRegion m_nonDraggableRegion;
 };
 
 #endif // CUSTOMCEFVIEW_H
