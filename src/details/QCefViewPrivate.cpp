@@ -944,7 +944,7 @@ void
 QCefViewPrivate::navigateToString(const QString& content)
 {
   if (pCefBrowser_) {
-    std::string data = content.toStdString();
+    std::string data = content.toLocal8Bit().data();
     data = CefURIEncode(CefBase64Encode(data.c_str(), data.size()), false).ToString();
     data = "data:text/html;base64," + data;
     pCefBrowser_->GetMainFrame()->LoadURL(data);
