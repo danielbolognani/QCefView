@@ -38,6 +38,8 @@ private:
   static QSet<QCefViewPrivate*> sLiveInstances;
   int clientSelectedCertificate;
 
+  double dCurrentZoom;
+
 public:
 
   CefRenderHandler::DragOperation currentDragOperation = CefRenderHandler::DragOperation::DRAG_OPERATION_NONE;

@@ -158,6 +158,8 @@ QCefViewPrivate::createCefBrowser(QCefView* view, const QString url, const QCefS
                                         archiveMapping.priority);
   }
 
+  dCurrentZoom = 1.0;
+
   // Set window info
   CefWindowInfo window_info;
 #if defined(CEF_USE_OSR)
@@ -228,7 +230,7 @@ QCefViewPrivate::destroyCefBrowser()
   // this will lead the top level window to be closed
   ncw.qBrowserWindow_->setParent(nullptr);
 #endif
-
+  dCurrentZoom = 1.0;
   // clean all browsers
   pClient_->CloseAllBrowsers();
   pClient_ = nullptr;
@@ -838,6 +840,21 @@ QCefViewPrivate::onViewKeyEvent(QKeyEvent* event)
   // QEvent::KeyRelease - send key release event
   if (event->type() == QEvent::KeyRelease) {
     e.type = KEYEVENT_KEYUP;
+
+    if (event->modifiers() & Qt::ControlModifier) {
+      auto qkey = event->key();
+      if (qkey == Qt::Key_Minus || qkey == Qt::Key_Underscore) {
+        dCurrentZoom -= 0.25;
+        pCefBrowser_->GetHost()->SetZoomLevel(dCurrentZoom);
+      } else if (qkey == Qt::Key_Plus || qkey == Qt::Key_Equal) {
+        dCurrentZoom += 0.25;
+        pCefBrowser_->GetHost()->SetZoomLevel(dCurrentZoom);
+      } else if (qkey == Qt::Key_0) {
+        dCurrentZoom = 1.0;
+        pCefBrowser_->GetHost()->SetZoomLevel(dCurrentZoom);
+      }
+    }
+
     pCefBrowser_->GetHost()->SendKeyEvent(e);
     return;
   }
@@ -927,6 +944,17 @@ QCefViewPrivate::onViewWheelEvent(QWheelEvent* event)
 
   e.x = p.x();
   e.y = p.y();
+
+  if (e.modifiers & EVENTFLAG_CONTROL_DOWN) {
+    if (event->angleDelta().y() < 0) {
+      dCurrentZoom -= 0.25;
+      pCefBrowser_->GetHost()->SetZoomLevel(dCurrentZoom);
+    } else {
+      dCurrentZoom += 0.25;
+      pCefBrowser_->GetHost()->SetZoomLevel(dCurrentZoom);
+    }
+  }
+
   pCefBrowser_->GetHost()->SendMouseWheelEvent(e, m & Qt::ShiftModifier ? 0 : d.x(), m & Qt::ShiftModifier ? 0 : d.y());
 #endif
 }
