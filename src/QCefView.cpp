@@ -7,6 +7,7 @@
 #include <QStyleOption>
 #include <QVBoxLayout>
 #include <QtDebug>
+#include <QDir>
 #pragma endregion qt_headers
 
 #include <QCefContext.h>
@@ -314,17 +315,75 @@ QCefView::inputMethodQuery(Qt::InputMethodQuery query) const
 }
 
 void
+fromMimeDataToCefDragData(const QMimeData* mimeData, CefRefPtr<CefDragData> tmpDragData)
+{
+  //Below are examples of drag data from Windows.
+  //To discover the drag data formats below, I printed the list retrived by mimeData->formats()
+  //To view the complete list of formats, you could do the same or just check it via Debug
+  //QByteArray b1 = mimeData->data("application/x-qt-windows-mime;value=\"FileName\"");
+  //QByteArray b2 = mimeData->data("application/x-qt-windows-mime;value=\"FileContents\"");
+  //QByteArray b3 = mimeData->data("application/x-qt-windows-mime;value=\"FileNameW\"");
+  //QByteArray b4 = mimeData->data("application/x-qt-windows-mime;value=\"DragImageBits\"");
+  //QByteArray b5 = mimeData->data("text/uri-list");
+
+  bool hasFile = false;
+  QByteArray fileName;
+  QStringList strList = mimeData->formats();
+  for (int i = 0; i < strList.size(); i++) {
+    QString format = strList.at(i);
+    if (format.contains("FileName")) {
+      fileName = mimeData->data(format);
+      hasFile = true;
+      break;
+    }
+  }
+
+  if (hasFile) {
+    QString fileAsString(fileName);
+    if (fileAsString != "" && fileAsString != "<NULL>") {
+      QString displayName = fileAsString.mid(fileAsString.lastIndexOf(QDir::separator()) + 1); //+1 to remove the last separator
+      tmpDragData->AddFile(fileAsString.toLocal8Bit().data(), displayName.toLocal8Bit().data());
+    }
+  }
+
+  if (mimeData->hasText()) {
+    QString text = mimeData->text();
+    tmpDragData->SetFragmentText(text.toLocal8Bit().data());
+  }
+
+  if (mimeData->hasHtml()) {
+    QString html = mimeData->html();
+    tmpDragData->SetFragmentHtml(html.toLocal8Bit().data());
+  }
+}
+
+void
 QCefView::onDragEnter(QDragEnterEvent* event)
 {
   //Implemented by Totvs
   Q_D(QCefView);
   QPoint point = event->position().toPoint();
+  Qt::DropAction dpa = event->dropAction();
+  QObject* obj = event->source();
 
   CefMouseEvent cefMouseEvent;
   cefMouseEvent.x = point.x();
   cefMouseEvent.y = point.y();
 
   CefRenderHandler::DragOperationsMask operationMask = QCefViewPrivate::getDragOperationMask(event->dropAction());
+
+  const QMimeData* mimeData = event->mimeData();
+
+  CefRefPtr<CefDragData> tmpDragData;
+  if (d->getDragData()) {
+    tmpDragData = d->getDragData();
+  } else {
+    tmpDragData = CefDragData::Create();
+  }
+
+  fromMimeDataToCefDragData(mimeData, tmpDragData);
+    
+  d->setDragData(tmpDragData);
 
   d->pCefBrowser_->GetHost()->DragTargetDragEnter(d->getDragData(), cefMouseEvent, operationMask);
   d->pCefBrowser_->GetHost()->DragTargetDragOver(cefMouseEvent, operationMask);

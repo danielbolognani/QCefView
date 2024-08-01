@@ -11,7 +11,6 @@
 #include <QIODevice>
 #include <QDrag>
 
-
 #if defined(CEF_USE_OSR)
 
 bool
@@ -184,6 +183,26 @@ cefImageToPixmap(CefRefPtr<CefImage> cefImage)
   return pixmap;
 }
 
+CefRefPtr<CefImage>
+qPixmapToCefImage(QPixmap pixmap)
+{
+  CefRefPtr<CefImage> cefImage = CefImage::CreateImage();
+
+  QImage img = pixmap.toImage();
+  //QByteArray arr;
+  //QDataStream ds(&arr, QIODevice::ReadWrite);
+  //ds.writeRawData((const char*)img.bits(), img.sizeInBytes());
+  //ds.device()->seek(0);
+
+  size_t sz = img.sizeInBytes();
+  uchar* a = new uchar[sz];
+  memcpy(a, img.bits(), sz);
+
+  cefImage->AddPNG(1, a, sz);
+
+  return cefImage;
+}
+
 
 /// <summary>
 /// Called when the user starts dragging content in the web view. Contextual information about the dragged content is
@@ -210,6 +229,7 @@ CCefClientDelegate::startDragging(CefRefPtr<CefBrowser> browser,
     CefString text = drag_data->GetFragmentText();
 
     CefRefPtr<CefDragData> dragDataClone = drag_data->Clone();
+
     dragDataClone->ResetFileContents();
 
     CefMouseEvent* event = new CefMouseEvent();
@@ -229,16 +249,21 @@ CCefClientDelegate::startDragging(CefRefPtr<CefBrowser> browser,
         QDrag* drag = new QDrag(pCefViewPrivate_);
         drag->setHotSpot(QPoint(0, 0));
 
+        QMimeData* mimeData = new QMimeData;
+
+        mimeData->setHtml(html.ToString().c_str());
+        mimeData->setText(text.ToString().c_str());        
+
         if (drag_data->HasImage()) {
             CefRefPtr<CefImage> img = drag_data->GetImage();
             QPixmap qp = cefImageToPixmap(img);
             dataStream << qp << originalPoint << html.ToString().c_str() << text.ToString().c_str();
             drag->setPixmap(qp);
+            mimeData->setImageData(qp);
         } else {
             dataStream << originalPoint << html.ToString().c_str() << text.ToString().c_str();
         }
 
-        QMimeData* mimeData = new QMimeData;
         mimeData->setData("application/x-dnditemdata", itemData);
         drag->setMimeData(mimeData);   
 
