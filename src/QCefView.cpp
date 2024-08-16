@@ -314,8 +314,7 @@ QCefView::inputMethodQuery(Qt::InputMethodQuery query) const
   return QWidget::inputMethodQuery(query);
 }
 
-void
-fromMimeDataToCefDragData(const QMimeData* mimeData, CefRefPtr<CefDragData> tmpDragData)
+void fromMimeDataToCefDragData(const QMimeData* mimeData, CefRefPtr<CefDragData> tmpDragData)
 {
   //Below are examples of drag data from Windows.
   //To discover the drag data formats below, I printed the list retrived by mimeData->formats()
@@ -325,7 +324,6 @@ fromMimeDataToCefDragData(const QMimeData* mimeData, CefRefPtr<CefDragData> tmpD
   //QByteArray b3 = mimeData->data("application/x-qt-windows-mime;value=\"FileNameW\"");
   //QByteArray b4 = mimeData->data("application/x-qt-windows-mime;value=\"DragImageBits\"");
   //QByteArray b5 = mimeData->data("text/uri-list");
-
   bool hasFile = false;
   QByteArray fileName;
   QStringList strList = mimeData->formats();
@@ -342,18 +340,31 @@ fromMimeDataToCefDragData(const QMimeData* mimeData, CefRefPtr<CefDragData> tmpD
     QString fileAsString(fileName);
     if (fileAsString != "" && fileAsString != "<NULL>") {
       QString displayName = fileAsString.mid(fileAsString.lastIndexOf(QDir::separator()) + 1); //+1 to remove the last separator
-      tmpDragData->AddFile(fileAsString.toLocal8Bit().data(), displayName.toLocal8Bit().data());
+      std::vector<CefString> existingFiles;
+      tmpDragData->GetFileNames(existingFiles);
+      bool canAddFile = true;
+      for (int i = 0; i < existingFiles.size(); i++) {
+        if (existingFiles[i] == fileAsString.toLocal8Bit().data()) {
+          canAddFile = false;
+          break;
+        }
+      }
+      if (canAddFile) {
+        tmpDragData->AddFile(fileAsString.toLocal8Bit().data(), displayName.toLocal8Bit().data());
+      }
+         
     }
-  }
+  } else {
 
-  if (mimeData->hasText()) {
-    QString text = mimeData->text();
-    tmpDragData->SetFragmentText(text.toLocal8Bit().data());
-  }
+    if (mimeData->hasText()) {
+      QString text = mimeData->text();
+      tmpDragData->SetFragmentText(text.toLocal8Bit().data());
+    }
 
-  if (mimeData->hasHtml()) {
-    QString html = mimeData->html();
-    tmpDragData->SetFragmentHtml(html.toLocal8Bit().data());
+    if (mimeData->hasHtml()) {
+      QString html = mimeData->html();
+      tmpDragData->SetFragmentHtml(html.toLocal8Bit().data());
+    }
   }
 }
 
